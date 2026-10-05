@@ -1,0 +1,378 @@
+---
+title: "Figure 4 - transcription-factor activity and SCENIC+ regulatory networks"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    fig_width: 11
+    fig_height: 6
+---
+
+```{r knitr-setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 300)
+```
+
+# Paths - edit these for your environment
+
+```
+<github>/
+  data/
+    activity_tables/        <species>_activity_df.rds, TF motif activity per cell type
+    SCENICplus/<species>/   eRegulon_direct.tsv, bin_median_AUC_*.csv
+    seurat_objects/         the annotated atlases
+  reference_files/atac/
+    <species>_tf_names.txt        the transcription factors scored per species
+    *__v__turneri_pp.tsv          OrthoFinder one-to-one maps against turneri
+```
+
+```{r paths}
+# Edit the path below to the directory containing the downloaded data
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+REF_DIR <- file.path(dirname(DATA_DIR), "reference_files", "atac")
+stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
+
+SPECIES <- c("gracilis", "turneri", "bifurca", "picta")
+
+scenic_dir <- function(sp) file.path(DATA_DIR, "SCENICplus", sp)
+tf_names_f <- function(sp) file.path(REF_DIR, paste0(sp, "_tf_names.txt"))
+
+# gracilis and turneri use the combined atlases
+SEURAT_FILES <- c(
+  gracilis = "GracilisAtlas_pregnant_non_pregnant.rds",
+  turneri  = "TurneriAtlas_pregnant_non_pregnant_juvenile.rds",
+  bifurca  = "BifurcaAtlas.rds",
+  picta    = "PictaAtlas.rds"
+)
+seurat_f <- function(sp) file.path(DATA_DIR, "seurat_objects", SEURAT_FILES[[sp]])
+
+ORTHO_FILES <- c(
+  gracilis = "gracilis_pp__v__turneri_pp.tsv",
+  bifurca  = "bifurca_longest_isoform__v__turneri_pp.tsv",
+  picta    = "picta_longest_isoform__v__turneri_pp.tsv"
+)
+ortho_f <- function(sp) file.path(REF_DIR, ORTHO_FILES[[sp]])
+```
+
+```{r check-inputs}
+# Fail here, listing what is missing, rather than part way through.
+expected <- c(
+  vapply(SPECIES, function(sp) file.path(DATA_DIR, "activity_tables", paste0(sp, "_activity_df.rds")), character(1)),
+  vapply(SPECIES, function(sp) file.path(scenic_dir(sp), "eRegulon_direct.tsv"), character(1)),
+  vapply(SPECIES, function(sp) file.path(scenic_dir(sp), "bin_median_AUC_by_gene.all_cell_types.csv"), character(1)),
+  vapply(SPECIES, tf_names_f, character(1)),
+  vapply(SPECIES, seurat_f, character(1)),
+  vapply(names(ORTHO_FILES), ortho_f, character(1))
+)
+missing <- expected[!file.exists(expected)]
+if (length(missing))
+  stop("Missing ", length(missing), " input(s):\n  ",
+       paste(sub(paste0("^", DATA_DIR, "/"), "", missing), collapse = "\n  "), call. = FALSE)
+message("all ", length(expected), " inputs found")
+```
+
+```{r libraries}
+suppressPackageStartupMessages({
+  library(Seurat)
+  library(tidyverse)
+  library(igraph)
+  library(ggraph)
+  library(tidygraph)
+  library(scales)
+})
+```
+
+```{r vocabulary}
+# Every input uses the display cell type nomenclature
+FOCAL_CELL_TYPES <- c("Germinal epithelium", "Granulosa", "Late follicle cell")
+```
+
+# 1. Figure 4B - TF activity across the four species
+
+```{r activity-matrices}
+# TF activity: motif enrichment in each cell type's marker peaks, as -log10
+# adjusted p-values
+activity_dfs <- lapply(SPECIES, function(sp)
+  as.data.frame(readRDS(file.path(DATA_DIR, "activity_tables", paste0(sp, "_activity_df.rds")))))
+names(activity_dfs) <- SPECIES
+```
+
+```{r merge-species}
+# One matrix of species_cellType columns, over the motifs scored in all four.
+common_tfs <- Reduce(intersect, lapply(activity_dfs, rownames))
+
+merged_df_filtered <- do.call(cbind, lapply(SPECIES, function(sp) {
+  d <- activity_dfs[[sp]][common_tfs, , drop = FALSE]
+  colnames(d) <- paste(sp, colnames(d), sep = "_")
+  d
+}))
+
+# Remove the embryonic cell types which are present in only some species
+merged_df_filtered <- merged_df_filtered[, !grepl("Embryonic", colnames(merged_df_filtered)),
+                                         drop = FALSE]
+
+message(length(common_tfs), " motifs, cell types kept: ",
+        paste(sort(unique(sub("^[^_]*_", "", colnames(merged_df_filtered)))), collapse = ", "))
+```
+
+```{r fig4b, fig.height=10, fig.width=24}
+# Figure 4B: selected TFs across cell types and species, scaled per TF so
+# species with different dynamic ranges can be compared.
+
+# match requested TFs to the motif names present, ignoring case
+resolveTF <- function(tfs, universe) {
+  m <- sapply(tfs, function(t) {
+    hit <- universe[tolower(universe) == tolower(t)]
+    if (length(hit)) hit[1] else NA_character_
+  })
+  if (any(is.na(m))) message("Not in the data, dropped: ", paste(tfs[is.na(m)], collapse = ", "))
+  m[!is.na(m)]
+}
+
+# Select TFs
+selected_tfs <- c("NR5A1","NR5A2","AR","ESRRA","ESRRB","Esrrg","Ppara","NR2F2","LHX9",
+                  "Lef1","TCF7L2","IRX3","IRX5","ESR2","WT1","BNC2","NR3C1","NR3C2",
+                  "TRPS1","TEAD3","TEAD4","GATA2","GATA3","GATA4","GATA5","GATA6","PGR")
+tf_use <- unname(resolveTF(selected_tfs, rownames(merged_df_filtered)))
+
+present_cts <- unique(sub("^[^_]*_", "", colnames(merged_df_filtered)))
+desired_cell_order <- c("Endothelial", "Erythrocytes", "Germline", "Germline stem cells",
+                        "Immune", "Stromal", "Vascular smooth muscle",
+                        "Yolk pericardial sac", "Late follicle cell",
+                        "Germinal epithelium", "Theca", "Granulosa")
+cellOrder <- c(intersect(desired_cell_order, present_cts),
+               setdiff(present_cts, desired_cell_order))
+
+species_colors <- c(turneri = "#377EB8", gracilis = "#E41A1C",
+                    bifurca = "#4DAF4A", picta = "#FF7F00")
+
+dot_scaled <- merged_df_filtered[tf_use, , drop = FALSE] %>%
+  as.data.frame() %>% rownames_to_column("TF") %>%
+  pivot_longer(-TF, names_to = "Full_Name", values_to = "Activity") %>%
+  separate(Full_Name, into = c("Species", "CellType"), sep = "_", extra = "merge") %>%
+  mutate(TF = factor(TF, levels = tf_use),
+         CellType = factor(CellType, levels = cellOrder)) %>%
+  group_by(TF) %>%
+  mutate(Scaled_Activity = Activity / max(Activity, na.rm = TRUE)) %>%
+  ungroup()
+
+ggplot(dot_scaled, aes(TF, CellType, colour = Species, size = Scaled_Activity,
+                       group = Species)) +
+  geom_point(alpha = 0.7, position = position_dodge(width = 0.8)) +
+  scale_colour_manual(values = species_colors) +
+  scale_size_continuous(range = c(0, 8)) +
+  theme_bw() +
+  labs(title = "TF activity, scaled per TF (four species)",
+       x = "Transcription factor", y = "Cell type") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# 2. Figure 4C - SCENIC+ consensus networks
+
+```{r load-scenic}
+# eRegulons and binarised AUC, keeping only +/+ and -/- eRegulons.
+all_eRegulons <- list(); auc_binary_list <- list(); tf_lists <- list()
+
+for (sp in SPECIES) {
+  message("SCENIC+: ", sp)
+  all_eRegulons[[sp]] <- read_tsv(file.path(scenic_dir(sp), "eRegulon_direct.tsv"),
+                                  show_col_types = FALSE)
+
+  auc <- read_csv(file.path(scenic_dir(sp), "bin_median_AUC_by_gene.all_cell_types.csv"),
+                  show_col_types = FALSE)
+  colnames(auc) <- gsub("_\\([0-9]+g\\)$", "", colnames(auc))
+  auc_binary_list[[sp]] <- auc
+
+  tf_lists[[sp]] <- read_delim(tf_names_f(sp), delim = "\t", col_names = FALSE,
+                               show_col_types = FALSE)$X1 %>% gsub("-.*", "", .)
+}
+```
+
+```{r load-ortho}
+# One-to-one orthologues, each species against turneri
+get_ortho_map <- function(path, ref_col, target_col) {
+  df <- read.table(path, fill = TRUE, header = TRUE, sep = "\t")
+  df <- df[!grepl(",", df[[ref_col]]) & !grepl(",", df[[target_col]]), ]
+  df[[ref_col]]    <- gsub("^g0+", "g", sub("-T[12]", "", df[[ref_col]]))
+  df[[target_col]] <- gsub("^g0+", "g", sub("-T[12]", "", df[[target_col]]))
+  dplyr::distinct(df, !!sym(ref_col), !!sym(target_col), .keep_all = TRUE)
+}
+
+ortho_maps <- list(
+  gracilis = get_ortho_map(ortho_f("gracilis"), "turneri_pp", "gracilis_pp"),
+  bifurca  = get_ortho_map(ortho_f("bifurca"),  "turneri_pp", "bifurca_longest_isoform"),
+  picta    = get_ortho_map(ortho_f("picta"),    "turneri_pp", "picta_longest_isoform")
+)
+```
+
+```{r load-atlases}
+# The atlases, used to require that a TF is expressed where its eRegulon is
+# called active.
+rna_threshold <- 0.5
+
+atlas_list <- lapply(SPECIES, function(sp) { message("atlas: ", sp); readRDS(seurat_f(sp)) })
+names(atlas_list) <- SPECIES
+
+get_expressed_tfs <- function(seurat_obj, threshold = rna_threshold) {
+  avg_exp <- AverageExpression(seurat_obj, group.by = "ident", slot = "data")$RNA
+  as.data.frame(avg_exp) %>%
+    rownames_to_column("gene_raw") %>%
+    pivot_longer(-gene_raw, names_to = "cell_type", values_to = "expression") %>%
+    mutate(gene_id = gsub("^g0+", "g", gsub("-.*", "", gene_raw))) %>%
+    filter(expression > threshold) %>%
+    dplyr::select(cell_type, gene_id, expression)
+}
+
+pseudobulk <- lapply(atlas_list, get_expressed_tfs)
+```
+
+```{r network-params}
+# Network thresholds.
+rank_cutoff       <- 0.50   # keep links in the best half of triplet ranks
+max_cell_types    <- 5      # an eRegulon active in more than this is not cell type specific
+eRegulon_count    <- 8      # TFs drawn per cell type
+number_of_species <- 1      # species support required
+```
+
+```{r network-helper}
+# Draw one network.
+plot_tf_network <- function(edge_df, active_regs, title_text,
+                            tf_species_counts = NULL, is_core = TRUE) {
+  if (nrow(edge_df) == 0) return(NULL)
+  top_tfs <- gsub("_.*", "", active_regs)
+
+  g <- as_tbl_graph(edge_df, directed = TRUE) %>% activate(nodes) %>%
+    mutate(is_top = name %in% top_tfs,
+           clean_node_id = gsub("^g0+", "g", gsub("-.*", "", name)),
+           species_supported = if (!is.null(tf_species_counts))
+             coalesce(tf_species_counts[clean_node_id], 1) else 1)
+
+  ggraph(g, layout = if (is_core) "stress" else "fr") +
+    geom_edge_link(aes(color = factor(regulation),
+                       width = (100 - triplet_rank_perc) / 100,
+                       alpha = int_with_plot),
+                   arrow = arrow(length = unit(2.5, "mm")),
+                   end_cap = circle(3, "mm"),
+                   show.legend = c(color = TRUE, width = TRUE, alpha = FALSE)) +
+    geom_node_point(aes(color = species_supported, size = is_top)) +
+    geom_node_text(aes(label = name, size = is_top, alpha = is_top),
+                   repel = TRUE, fontface = "bold", family = "sans") +
+    scale_edge_color_manual(name = "Regulation", values = c("1" = "#228B22", "-1" = "#CC0000"),
+                            labels = c("Activation", "Repression")) +
+    scale_edge_width(name = "Confidence", range = c(0.2, 1.5)) +
+    scale_edge_alpha_manual(values = c("1" = 1, "0" = 0.3)) +
+    scale_size_manual(values = c("TRUE" = 5, "FALSE" = 2.5), guide = "none") +
+    scale_alpha_manual(values = c("TRUE" = 1, "FALSE" = 0.7), guide = "none") +
+    scale_color_viridis_c(name = "Species active in", limits = c(1, 4), breaks = 1:4) +
+    theme_graph(base_family = "sans") +
+    labs(title = title_text, subtitle = "Core interactions between the top regulons") +
+    theme(legend.position = "bottom", legend.box = "vertical")
+}
+```
+
+```{r rankings-per-species}
+# Active eRegulons per species, kept where the TF is also expressed there.
+# These inform the consensus
+all_rankings <- list(); all_raw_edges <- list()
+
+for (sp in SPECIES) {
+  scenic_base <- auc_binary_list[[sp]] %>%
+    rename(cell_type = cell_types) %>%
+    pivot_longer(-cell_type, names_to = "eRegulon", values_to = "Is_Active") %>%
+    filter(Is_Active == 1) %>%
+    group_by(eRegulon) %>% filter(n() <= max_cell_types) %>% ungroup()
+
+  active_regulons_long <- scenic_base %>%
+    mutate(gene_id = gsub("^g0+", "g", gsub("-.*", "", eRegulon))) %>%
+    inner_join(pseudobulk[[sp]], by = c("cell_type", "gene_id"))
+
+  message(sp, ": ", nrow(active_regulons_long), " active and expressed eRegulon calls across ",
+          n_distinct(active_regulons_long$cell_type), " cell types")
+
+  all_rankings[[sp]]  <- active_regulons_long
+  all_raw_edges[[sp]] <- all_eRegulons[[sp]]
+}
+```
+
+```{r consensus, fig.height=24, fig.width=24}
+# Figure 4C: every species placed in turneri gene space, so a TF counts once
+# however many species support it. Core networks only.
+turneri_edges <- all_raw_edges[["turneri"]]
+
+id_to_full_name <- bind_rows(
+  tibble(id = gsub("^g0+", "g", gsub("-.*", "", turneri_edges$TF)),   full = turneri_edges$TF),
+  tibble(id = gsub("^g0+", "g", gsub("-.*", "", turneri_edges$Gene)), full = turneri_edges$Gene)
+) %>% distinct(id, .keep_all = TRUE) %>% deframe()
+
+mapped_rankings <- list(); mapped_edges <- list()
+
+for (sp in SPECIES) {
+  rankings <- all_rankings[[sp]]; eReg_raw <- all_raw_edges[[sp]]
+
+  if (sp != "turneri") {
+    target_col <- setdiff(names(ortho_maps[[sp]]), c("turneri_pp", "Orthogroup"))
+    rankings_m <- rankings %>%
+      inner_join(ortho_maps[[sp]], by = setNames(target_col, "gene_id"),
+                 relationship = "many-to-many") %>%
+      mutate(tf_symbol = turneri_pp)
+    edges_m <- eReg_raw %>%
+      mutate(from_id = gsub("^g0+", "g", gsub("-.*", "", TF)),
+             to_id   = gsub("^g0+", "g", gsub("-.*", "", Gene))) %>%
+      inner_join(ortho_maps[[sp]], by = setNames(target_col, "from_id"),
+                 relationship = "many-to-many") %>% rename(from = turneri_pp) %>%
+      inner_join(ortho_maps[[sp]], by = setNames(target_col, "to_id"),
+                 relationship = "many-to-many") %>% rename(to = turneri_pp)
+  } else {
+    rankings_m <- rankings %>% mutate(tf_symbol = gene_id)
+    edges_m <- eReg_raw %>% mutate(from = gsub("^g0+", "g", gsub("-.*", "", TF)),
+                                   to   = gsub("^g0+", "g", gsub("-.*", "", Gene)))
+  }
+
+  mapped_rankings[[sp]] <- rankings_m %>% mutate(species = sp)
+  mapped_edges[[sp]] <- edges_m %>%
+    mutate(triplet_rank_perc = (triplet_rank / max(triplet_rank, na.rm = TRUE)) * 100) %>%
+    filter(percent_rank(triplet_rank) <= rank_cutoff) %>% mutate(species = sp)
+}
+
+consensus_activity <- bind_rows(mapped_rankings) %>%
+  group_by(cell_type, tf_symbol) %>%
+  summarise(mean_scaled_activity = sum(as.numeric(Is_Active), na.rm = TRUE),
+            n_species_active = n_distinct(species), .groups = "drop")
+
+consensus_edges <- bind_rows(mapped_edges) %>%
+  group_by(from, to, regulation) %>%
+  summarise(avg_rank = mean(triplet_rank_perc, na.rm = TRUE),
+            species_count = n_distinct(species), .groups = "drop")
+
+for (ct in intersect(FOCAL_CELL_TYPES, unique(consensus_activity$cell_type))) {
+  ct_data <- consensus_activity %>% filter(cell_type == ct)
+
+  top_active <- ct_data %>%
+    filter(mean_scaled_activity >= number_of_species) %>%
+    slice_max(order_by = mean_scaled_activity, n = eRegulon_count, with_ties = FALSE) %>%
+    pull(tf_symbol)
+
+  if (length(top_active) == 0) {
+    message(ct, ": no TFs met the species-support threshold"); next
+  }
+
+  counts_lookup <- ct_data %>% dplyr::select(tf_symbol, mean_scaled_activity) %>% deframe()
+
+  core <- consensus_edges %>%
+    filter(from %in% top_active & to %in% top_active) %>%
+    rename(triplet_rank_perc = avg_rank) %>%
+    mutate(int_with_plot = "1",
+           from = recode(from, !!!id_to_full_name),
+           to   = recode(to,   !!!id_to_full_name))
+
+  p <- plot_tf_network(core, recode(top_active, !!!id_to_full_name),
+                       paste0("Consensus | ", ct), tf_species_counts = counts_lookup)
+  if (!is.null(p)) print(p) else
+    message(ct, ": no core interactions between the top ", eRegulon_count, " TFs")
+}
+```
+
+```{r session}
+sessionInfo()
+```

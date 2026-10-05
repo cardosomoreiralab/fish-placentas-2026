@@ -1,0 +1,311 @@
+---
+title: "Supplementary Figure 7 - TF activity similarity and shared TF patterns"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    fig_width: 11
+    fig_height: 9
+---
+
+```{r knitr-setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 150)
+```
+
+# Paths - edit these for your environment
+
+```{r paths}
+# Edit the path below to the directory containing the downloaded data
+
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXX"
+
+REF_DIR <- file.path(dirname(DATA_DIR), "reference_files", "atac")
+stopifnot(dir.exists(DATA_DIR))
+
+SPECIES <- c("gracilis", "turneri", "bifurca", "picta")
+
+```
+
+```{r libraries}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(pheatmap)
+  library(RColorBrewer)
+})
+```
+
+```{r vocabulary}
+# Every input uses the display vocabulary; nothing is translated here.
+```
+
+```{r activity-matrices}
+# TF activity: motif enrichment in each cell type's marker peaks, as -log10
+# adjusted p-values. Read, not recomputed: the deposited ArchR projects keep
+# the motif match files but their peakAnnotation slot is empty, so
+# peakAnnoEnrichment() cannot be run against them.
+activity_dfs <- lapply(SPECIES, function(sp) {
+  f <- file.path(DATA_DIR, "activity_tables", paste0(sp, "_activity_df.rds"))
+  if (!file.exists(f)) stop("missing activity table: ", f, call. = FALSE)
+  as.data.frame(readRDS(f))
+})
+names(activity_dfs) <- SPECIES
+
+lapply(activity_dfs, colnames)
+```
+
+# A. Cross-species TF-activity similarity
+
+```{r merge}
+# One matrix of species_cellType columns, over the motifs scored in all four,
+# without the embryonic cell types or invariant motifs.
+common_tfs <- Reduce(intersect, lapply(activity_dfs, rownames))
+message("motifs scored in all four species: ", length(common_tfs))
+
+merged_df <- do.call(cbind, lapply(SPECIES, function(sp) {
+  d <- activity_dfs[[sp]][common_tfs, , drop = FALSE]
+  colnames(d) <- paste(sp, colnames(d), sep = "_")
+  d
+}))
+
+# embryonic cell types are present in only some species and dominate the
+# clustering if kept
+merged_df <- merged_df[, !grepl("Embryonic", colnames(merged_df))]
+
+rv <- apply(merged_df, 1, var)
+merged_df_filtered <- merged_df[is.finite(rv) & rv > 0, , drop = FALSE]
+
+dim(merged_df_filtered)
+```
+
+```{r similarity-helpers}
+# Pearson similarity, within one matrix and between two.
+METHOD <- "pearson"
+
+simMat <- function(x, method = METHOD) {
+  s <- cor(as.matrix(x), method = method, use = "pairwise.complete.obs")
+  s[is.na(s)] <- 0
+  s
+}
+
+crossSim <- function(a, b, method = METHOD) {
+  s <- cor(as.matrix(a), as.matrix(b), method = method)
+  s[is.na(s)] <- 0
+  s
+}
+
+scaleFor <- function(method = METHOD) {
+  list(col = colorRampPalette(c("blue", "white", "red"))(100),
+       brk = seq(-1, 1, length.out = 101))
+}
+
+species_colors <- c(turneri = "#377EB8", gracilis = "#E41A1C",
+                    bifurca = "#4DAF4A", picta = "#FF7F00")
+```
+
+## A1. Global similarity, every cell type in every species
+
+```{r sf7a-global, fig.width = 13, fig.height = 12}
+# Supplementary 7A: do the same cell types group across species, or does each
+# species group with itself?
+s  <- simMat(merged_df_filtered)
+sc <- scaleFor()
+
+ann <- data.frame(Species  = sub("_.*", "", colnames(s)),
+                  CellType = sub("^[^_]*_", "", colnames(s)),
+                  row.names = colnames(s))
+ctPal <- setNames(colorRampPalette(brewer.pal(8, "Set2"))(length(unique(ann$CellType))),
+                  sort(unique(ann$CellType)))
+
+# annotation_col only: the matrix is symmetric, and annotating both axes draws
+# the species and cell-type legends twice. ComplexHeatmap's pheatmap takes the
+# same arguments and lets the colour legend be named.
+if (requireNamespace("ComplexHeatmap", quietly = TRUE)) {
+  ComplexHeatmap::pheatmap(
+    s,
+    name = "Pearson correlation",
+    main = "Global TF-activity similarity",
+    clustering_method = "ward.D2",
+    annotation_col = ann,
+    annotation_colors = list(Species = species_colors, CellType = ctPal),
+    color = sc$col, breaks = sc$brk,
+    show_rownames = FALSE, fontsize_col = 6)
+} else {
+  pheatmap(s,
+           main = "Global TF-activity similarity (Pearson correlation)",
+           clustering_method = "ward.D2",
+           annotation_col = ann,
+           annotation_colors = list(Species = species_colors, CellType = ctPal),
+           color = sc$col, breaks = sc$brk,
+           show_rownames = FALSE, fontsize_col = 6)
+}
+```
+
+# B. Transcription factors with shared patterns across species
+
+```{r sf7b-pipelines}
+# TFs whose activity ranks follow one of two patterns: top in granulosa and
+# theca, or focused on the late follicle cell. Ranks are taken over these cell
+# types only, and are natural ranks - no per-species activity floor.
+PATTERN_CELL_TYPES <- c("Stromal", "Endothelial", "Vascular smooth muscle", "Immune",
+                        "Erythrocytes", "Yolk pericardial sac", "Germinal epithelium",
+                        "Late follicle cell", "Granulosa", "Theca")
+
+# shared first steps: active in at least three cell types, and the third and
+# fourth ranked clearly separated
+rank_by_cell_type <- function(activity_df, min_gap = 3) {
+  calc_df <- activity_df[, sapply(activity_df, is.numeric), drop = FALSE]
+  calc_df <- calc_df[, intersect(PATTERN_CELL_TYPES, colnames(calc_df)), drop = FALSE]
+
+  filtered_df <- calc_df[apply(calc_df, 1, function(row) sum(row > 2)) >= 3, , drop = FALSE]
+  if (nrow(filtered_df) == 0) return(NULL)
+
+  clear <- apply(filtered_df, 1, function(row) {
+    srt <- sort(row, decreasing = TRUE)
+    if (length(srt) >= 4) (srt[3] - srt[4]) >= min_gap else TRUE
+  })
+  filtered_df <- filtered_df[clear, , drop = FALSE]
+  if (nrow(filtered_df) == 0) return(NULL)
+
+  t(apply(filtered_df, 1, function(row) rank(-row, ties.method = "min")))
+}
+
+as_long <- function(matched_matrix, pattern_labels, species_name) {
+  as.data.frame(matched_matrix) %>% rownames_to_column("TF") %>%
+    mutate(Pattern = pattern_labels, Species = species_name) %>%
+    pivot_longer(-c(TF, Pattern, Species), names_to = "CellType", values_to = "Rank")
+}
+
+# Pipeline 1: granulosa and theca together, or germinal epithelium first
+find_dual_pattern_tfs_1 <- function(activity_df, species_name, min_gap = 3) {
+  tf_rank <- rank_by_cell_type(activity_df, min_gap); if (is.null(tf_rank)) return(NULL)
+  if (!all(c("Granulosa", "Theca", "Germinal epithelium") %in% colnames(tf_rank))) return(NULL)
+
+  cond_g <- tf_rank[, "Granulosa"] %in% c(1, 2)
+  cond_t <- tf_rank[, "Theca"] %in% c(1, 2)
+  p1 <- unique(unlist(lapply(setdiff(colnames(tf_rank), c("Granulosa", "Theca")), function(cell) {
+    idx <- cond_g & cond_t & tf_rank[, cell] == 3
+    if (any(idx)) rownames(tf_rank)[idx] else NULL
+  })))
+  p2 <- rownames(tf_rank)[tf_rank[, "Germinal epithelium"] == 1 &
+                          tf_rank[, "Granulosa"] %in% c(2, 3) &
+                          tf_rank[, "Theca"] %in% c(2, 3)]
+
+  all_tfs <- unique(c(p1, p2)); if (!length(all_tfs)) return(NULL)
+  m <- tf_rank[all_tfs, , drop = FALSE]
+  labels <- sapply(rownames(m), function(tf)
+    paste(c(if (tf %in% p1) "Pattern 1 (granulosa/theca top 2)",
+            if (tf %in% p2) "Pattern 2 (germinal epithelium first)"), collapse = " & "))
+  as_long(m, labels, species_name)
+}
+
+# Pipeline 2: focused on the late follicle cell
+find_dual_pattern_tfs_2 <- function(activity_df, species_name, min_gap = 3) {
+  tf_rank <- rank_by_cell_type(activity_df, min_gap); if (is.null(tf_rank)) return(NULL)
+  if (!all(c("Late follicle cell", "Germinal epithelium", "Granulosa", "Theca")
+           %in% colnames(tf_rank))) return(NULL)
+
+  p1 <- rownames(tf_rank)[tf_rank[, "Late follicle cell"] == 1]
+  p2 <- rownames(tf_rank)[tf_rank[, "Late follicle cell"] == 2 &
+                          tf_rank[, "Germinal epithelium"] == 1]
+
+  all_tfs <- unique(c(p1, p2)); if (!length(all_tfs)) return(NULL)
+  m <- tf_rank[all_tfs, , drop = FALSE]
+  labels <- sapply(rownames(m), function(tf)
+    paste(c(if (tf %in% p1) "A (late follicle cell first)",
+            if (tf %in% p2) "B (late follicle second, germinal epithelium first)"),
+          collapse = " & "))
+  as_long(m, labels, species_name)
+}
+```
+
+```{r sf7b-plots, fig.width = 18, fig.height = 9}
+# Supplementary 7B: mean rank per cell type across the species that support a
+# TF. A TF whose MEAN activity in a cell type is below act_floor is pushed to
+# the bottom rank, so a low-activity cell type cannot look informative just
+# because its rank happens to be high. Lines are offset slightly so overlapping
+# TFs stay visible.
+ACT_FLOOR <- 1
+
+make_plot <- function(fn, title, subtitle, jitter = 0.35, act_floor = ACT_FLOOR) {
+  n_ct <- length(PATTERN_CELL_TYPES)
+
+  mc <- bind_rows(lapply(SPECIES, function(sp) fn(activity_dfs[[sp]], sp, min_gap = 3)))
+  if (!nrow(mc)) { message("no TFs matched: ", title); return(invisible(NULL)) }
+
+  # mean absolute activity per TF and cell type, across species
+  act <- map_dfr(SPECIES, function(sp) {
+    num <- as.matrix(activity_dfs[[sp]][, sapply(activity_dfs[[sp]], is.numeric), drop = FALSE])
+    num <- num[, intersect(PATTERN_CELL_TYPES, colnames(num)), drop = FALSE]
+    as.data.frame(num) %>% rownames_to_column("TF") %>%
+      pivot_longer(-TF, names_to = "CellType", values_to = "Activity") %>%
+      mutate(Species = sp)
+  }) %>%
+    group_by(TF, CellType) %>%
+    summarise(Mean_Activity = mean(Activity, na.rm = TRUE), .groups = "drop")
+
+  consensus <- mc %>%
+    group_by(TF, CellType) %>%
+    summarise(Mean_Rank = mean(Rank, na.rm = TRUE),
+              Species_Count = n_distinct(Species),
+              Patterns_Matched = paste(unique(Pattern), collapse = " / "),
+              .groups = "drop") %>%
+    filter(Species_Count >= 2) %>%
+    left_join(act, by = c("TF", "CellType")) %>%
+    mutate(Mean_Rank = ifelse(!is.na(Mean_Activity) & Mean_Activity < act_floor,
+                              n_ct, Mean_Rank))
+  if (!nrow(consensus)) { message("nothing supported by two species: ", title); return(invisible(NULL)) }
+
+  rank_table <- consensus %>%
+    mutate(Mean_Rank = round(Mean_Rank, 2)) %>%
+    dplyr::select(TF, CellType, Mean_Rank) %>%
+    pivot_wider(names_from = CellType, values_from = Mean_Rank) %>%
+    dplyr::select(TF, any_of(PATTERN_CELL_TYPES))
+
+  activity_table <- consensus %>%
+    mutate(Mean_Activity = round(Mean_Activity, 2)) %>%
+    dplyr::select(TF, CellType, Mean_Activity) %>%
+    pivot_wider(names_from = CellType, values_from = Mean_Activity) %>%
+    dplyr::select(TF, any_of(PATTERN_CELL_TYPES))
+
+  cat("\n==== ", title, " - mean rank per cell type ====\n")
+  print(as.data.frame(rank_table), row.names = FALSE)
+  cat("\n==== ", title, " - mean activity per cell type ====\n")
+  print(as.data.frame(activity_table), row.names = FALSE)
+
+  plot_df <- consensus %>%
+    mutate(CellType = factor(CellType, levels = PATTERN_CELL_TYPES)) %>%
+    filter(!is.na(CellType))
+
+  tf_levels <- unique(plot_df$TF)
+  offs <- setNames(seq(-jitter, jitter, length.out = max(length(tf_levels), 1)), tf_levels)
+  plot_df$Rank_jit <- plot_df$Mean_Rank + offs[plot_df$TF]
+
+  p <- ggplot(plot_df, aes(CellType, Rank_jit, group = TF, color = TF)) +
+    geom_line(linewidth = 0.9, alpha = 0.7) +
+    geom_point(aes(size = Species_Count), alpha = 0.85) +
+    scale_y_reverse(breaks = seq(1, ceiling(max(plot_df$Mean_Rank)), by = 1)) +
+    scale_size_continuous(breaks = 2:4, range = c(3, 6)) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, face = "bold"),
+          legend.position = "right", panel.grid.minor = element_blank()) +
+    labs(title = title,
+         subtitle = paste0(subtitle, " (mean activity < ", act_floor,
+                           " forced to bottom rank; lines offset)"),
+         x = "Cell type", y = "Mean rank", colour = "TF", size = "Species")
+  print(p)
+  invisible(list(ranks = rank_table, activity = activity_table, consensus = consensus))
+}
+
+invisible(make_plot(find_dual_pattern_tfs_1,
+                    "Consensus TF signatures - granulosa and theca",
+                    "Low mean activity forced to bottom rank"))
+
+invisible(make_plot(find_dual_pattern_tfs_2,
+                    "Consensus TF signatures - late follicle cell",
+                    "Late follicle cell targeting"))
+```
+
+```{r session}
+sessionInfo()
+```
