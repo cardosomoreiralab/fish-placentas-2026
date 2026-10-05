@@ -1,6 +1,3 @@
-# fish-placentas-2026
-Code to reproduce the analysis in Safian, Kraunsoe et al. 2027
-
 # A new cell type facilitated live-bearing and multiple independent origins of placentation in fish
 
 Code and processed data for Safian, Kraunsoe et al. 2027 ([journal], [DOI]).
@@ -56,16 +53,9 @@ Supplementary figures, in [`figures/supplementary/`](figures/supplementary):
 | [`code_sf10.R`](figures/supplementary/code_sf10.R) | number of DEGs per cell type in the placental species |
 | [`code_sf11.R`](figures/supplementary/code_sf11.R) | enrichment of genes of different ages across ovarian cell types, in the four species pairs |
 
-* [`R/paths.R`](R/paths.R) — the one place that says where the deposited data
-  is. Set `PLACENTA_DATA` once and every script finds its inputs.
-
-Each script is standalone: open it, source `R/paths.R`, run it top to bottom.
-
 ## Reference data
 
-Small inputs are in [`data/`](data). Everything large - the Seurat objects, the
-ArchR projects and the SCENIC+ outputs - is deposited rather than committed, and
-`R/paths.R` points at wherever you have unpacked it.
+Inputs are in [`data/`](data).
 
 ## Data availability
 
