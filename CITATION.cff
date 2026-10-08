@@ -1,0 +1,52 @@
+cff-version: 1.2.0
+message: "If you use this code or the atlases, please cite the paper below."
+title: "A new cell type facilitated live-bearing and multiple independent origins of placentation in fish"
+abstract: >-
+  Analysis code for single-nucleus RNA-seq of ovaries from nine poeciliid
+  species, single-nucleus ATAC-seq from four, and the SCENIC+ regulatory
+  networks built from them.
+type: software
+authors:
+  - family-names: Safian
+    given-names: Diego
+    affiliation: "The Francis Crick Institute, London, UK"
+    email: diego.safian@crick.ac.uk
+  - family-names: Kraunsoe
+    given-names: Sophie
+    affiliation: "The Francis Crick Institute, London, UK"
+    email: sophie.kraunsoe@crick.ac.uk
+  - family-names: Falis
+    given-names: Marcin
+    affiliation: "The Francis Crick Institute, London, UK"
+  - family-names: Labra
+    given-names: Leann
+    affiliation: "University of California, Riverside, Riverside, CA, USA"
+  - family-names: Reznick
+    given-names: David
+    affiliation: "University of California, Riverside, Riverside, CA, USA"
+  - family-names: Cardoso-Moreira
+    given-names: Margarida
+    affiliation: "The Francis Crick Institute, London, UK"
+    email: margarida.cardosomoreira@crick.ac.uk
+repository-code: "https://github.com/cardosomoreiralab/fish-placentas-2026"
+license: MIT
+# Fill these in when the paper is accepted, and tag a release so Zenodo mints a DOI.
+preferred-citation:
+  type: article
+  title: "A new cell type facilitated live-bearing and multiple independent origins of placentation in fish"
+  authors:
+    - family-names: Safian
+      given-names: Diego
+    - family-names: Kraunsoe
+      given-names: Sophie
+    - family-names: Falis
+      given-names: Marcin
+    - family-names: Labra
+      given-names: Leann
+    - family-names: Reznick
+      given-names: David
+    - family-names: Cardoso-Moreira
+      given-names: Margarida
+  year: 2026
+  journal: "TO BE COMPLETED"
+  doi: "TO BE COMPLETED"

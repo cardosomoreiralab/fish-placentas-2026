@@ -1,0 +1,46 @@
+# Data never belongs in the repository - it is deposited at ArrayExpress and ENA
+*.rds
+*.qs
+*.qs2
+*.h5
+*.h5ad
+*.h5mu
+*.loom
+*.mtx
+*.bam
+*.bai
+*.fastq
+*.fastq.gz
+*.fq.gz
+*.arrow
+
+# R
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+env/
+
+# Editors and OS
+.DS_Store
+.vscode/
+*.swp
+
+# Cluster logs
+slurm-*.out
+*_%j.txt
+output/
+
+# Editor backups and incidental tool output
+*.bak
+ArchRLogs/
+
+# Small reference tables belong in the repo
+!data/reference/**/*.rds
