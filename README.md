@@ -60,7 +60,7 @@ Inputs are in [`data/`](data).
 ## Data availability
 
 * Single-nucleus RNA-seq: ArrayExpress [`E-MTAB-17757`](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-17757)
-* Single-nucleus ATAC-seq: ArrayExpress [`E-MTAB-XXXXX`](https://www.ebi.ac.uk/biostudies/arrayexpress)
+* Single-nucleus ATAC-seq: ArrayExpress [`E-MTAB-17776`](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-17776)
 * Genome assemblies: ENA [`PRJEB115767`](https://www.ebi.ac.uk/ena/browser/view/PRJEB115767)
 * Annotated Seurat objects for all eleven atlases, the ArchR projects and the
   SCENIC+ outputs are deposited alongside the raw data; cell-type names follow
