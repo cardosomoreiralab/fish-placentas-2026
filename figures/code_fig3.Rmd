@@ -1,1 +1,184 @@
+---
+title: "Figure 3"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
+---
 
+# Figure 3
+
+## Getting the data
+
+Processed data are deposited at ArrayExpress, genome assemblies at ENA:
+
+| Data | Accession |
+|---|---|
+| Single-nucleus RNA-seq | `E-MTAB-17757` |
+| Single-nucleus ATAC-seq | `E-MTAB-17776` |
+| Genome assemblies | `PRJEB115767` |
+
+Small reference tables are committed in this repository under `data/reference/`
+and need no download: orthology maps, TF lists, SAMap scores, gene-to-GO maps,
+TF activity, and the differential expression tables.
+
+Download the processed objects from the two ArrayExpress accessions into one
+master folder. Every script reads from exactly two places: `DATA_DIR` (what you
+downloaded) and `REF_DIR` (this repository).
+
+```
+<DATA_DIR>/
+|-- snRNA/                                   E-MTAB-17757
+|   `-- seurat/
+|       |-- bifurca_atlas.rds
+|       |-- brachi_atlas.rds
+|       |-- formosa_atlas.rds
+|       |-- gracilis_atlas.rds
+|       |-- gracilis_atlas_pregnant.rds    pregnant samples only
+|       |-- infans_atlas.rds
+|       |-- phallo_atlas.rds
+|       |-- picta_atlas.rds
+|       |-- prolifica_atlas.rds
+|       |-- turneri_atlas.rds
+|       `-- turneri_atlas_pregnant.rds     pregnant samples only
+`-- snATAC/                                  E-MTAB-17776
+    |-- archr/
+    |   `-- <species>/
+    |       |-- ArrowFiles/<Species>_ovary_<library>.arrow
+    |       `-- Save-ArchR-Project.rds
+    `-- scenicplus/
+        `-- <species>/
+            |-- eRegulon_<cell type>.csv
+            `-- raw_TF_gene_pairs.tsv
+```
+
+**Naming conventions.** `<species>` is always the lower-case short name:
+`bifurca`, `brachi`, `formosa`, `gracilis`, `infans`, `phallo`, `picta`,
+`prolifica`, `turneri`. Two renames are needed after download, because the
+deposited archives are flat:
+
+- Seurat objects are deposited under their analysis names
+  (`bifurca_harmony_annotated.rds`, `TurneriAtlas_pregnant_non_pregnant_juvenile.rds`,
+  and so on). Rename each to `<species>_atlas.rds`. *P. gracilis* and
+  *P. turneri* also have a pregnant-only atlas; name those
+  `<species>_atlas_pregnant.rds`. Panels use the combined atlas unless
+  stated otherwise - Figure 1B uses the pregnant-only *P. turneri* atlas.
+- ArchR project objects are deposited as `<species>_Save-ArchR-Project.rds`.
+  Drop the prefix so each becomes `Save-ArchR-Project.rds` inside its own
+  `<species>/` folder, with that species' arrow files in `ArrowFiles/` beside it.
+  `loadArchRProject()` re-points the arrow paths itself on first load. On a
+  network filesystem set `Sys.setenv(HDF5_USE_FILE_LOCKING = "FALSE")` first.
+
+Every atlas carries a `cell_type` column in `meta.data` using one vocabulary
+across all nine species. The scripts below use that column rather than the
+per-species cluster numbers, so the same code runs for every species.
+
+## Panels in this file
+
+| Panel | Chunk | Status |
+|---|---|---|
+| 3B | `fig3b` | vitellogenesis and ovulation gene-set activity per cell type |
+
+Panel 3A is the GO enrichment of late follicle cell markers, a standard topGO
+analysis described in the Methods. Panel 3C is the upset plot and pie chart of
+positively selected genes. Neither is reproduced here.
+
+```{r knitr-setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 300)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+## PURPOSE : Set the two paths every chunk below reads from, and load packages.
+## PRODUCES: DATA_DIR, REF_DIR, SPECIES, CELL_ORDER
+## QUESTION: none - configuration only.
+
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"   # master folder described above
+REF_DIR  <- "../data/reference"             # reference tables, committed in this repo
+
+stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
+
+suppressPackageStartupMessages({
+  library(dplyr); library(tidyr); library(readr); library(tibble)
+  library(ggplot2); library(patchwork)
+  library(Seurat); library(AUCell)
+})
+
+## species carrying an ovary atlas used in this figure
+SPECIES <- c("bifurca","picta","turneri","gracilis",
+             "prolifica","infans","formosa","brachi")
+
+## the paper's cell-type vocabulary, in the order the panels use
+CELL_ORDER <- c("Germinal epithelium","Granulosa","Theca","Late follicle cell",
+                "Yolk pericardial sac","Stromal","Endothelial","Immune","Erythrocytes")
+
+## rownames are <gene id><separator><symbol>; this recovers the symbol
+gene_symbol <- function(x) sub("^g[0-9]+[.-]", "", x)
+gene_id     <- function(x) sub("^(g[0-9]+)[.-].*$", "\\1", x)
+```
+
+### 3B - vitellogenesis and ovulation activity
+
+```{r fig3b, fig.width = 11, fig.height = 5}
+## PURPOSE : Figure 3B - score every cell for two curated gene sets with AUCell,
+##           then average per cell type and z-score within each species.
+## PRODUCES: combined_data (long table) and the paired dot plots, printed here
+## QUESTION: is the yolk-processing programme concentrated in the late follicle
+##           cell, and does that holds across species?
+
+VITELLOGENESIS <- c("fshr","lhcgr","lhr","bmpr2","alk","npr2",
+                    "fabp","stra6","rbp4","slc7a5","slc38a3","glut1","slc2a1",
+                    "cyp19a1a","hsd3b","cyp17a1","gja1","gja4")
+OVULATION      <- c("pgr","inhbb","inha","inhba","fshr","lhcgr","ptgs2","adamts1",
+                    "cyp17a2","duox","foxp3a","lepr","lhb","mettl3","nedd8","pgrmc1")
+
+score_species <- function(sp) {
+  obj  <- readRDS(file.path(DATA_DIR, "snRNA", "seurat", paste0(sp, "_atlas.rds")))
+  cnts <- obj[["RNA"]]$counts
+  syms <- tolower(gene_symbol(rownames(cnts)))
+
+  sets <- list(vitellogenesis = rownames(cnts)[syms %in% tolower(VITELLOGENESIS)],
+               ovulation      = rownames(cnts)[syms %in% tolower(OVULATION)])
+  sets <- sets[lengths(sets) > 0]
+  if (!length(sets)) { warning(sp, ": neither gene set matched"); return(NULL) }
+
+  auc <- AUCell_run(as.matrix(cnts), sets, keepZeroesAsNA = TRUE)
+
+  ## AUCell returns gene sets x cells, in the same cell order as the object
+  as.data.frame(t(getAUC(auc))) |>
+    tibble::rownames_to_column("cell") |>
+    mutate(cell_type = as.character(obj$cell_type[cell])) |>
+    filter(cell_type %in% CELL_ORDER) |>
+    pivot_longer(all_of(names(sets)), names_to = "gene_set", values_to = "auc") |>
+    group_by(cell_type, gene_set) |>
+    summarise(mean_auc = mean(auc, na.rm = TRUE), .groups = "drop") |>
+    mutate(species = sp)
+}
+
+combined_data <- bind_rows(lapply(SPECIES, score_species)) |>
+  group_by(species, gene_set) |>
+  mutate(zscore_auc = as.numeric(scale(mean_auc))) |>
+  ungroup() |>
+  mutate(cell_type = factor(cell_type, levels = CELL_ORDER),
+         species   = factor(species,   levels = SPECIES))
+
+dot_plot <- function(d, title) {
+  ggplot(d, aes(species, cell_type, size = zscore_auc, colour = zscore_auc)) +
+    geom_point() +
+    scale_colour_gradient2(low = "#2166AC", mid = "#F7F7F7", high = "#B2182B",
+                           midpoint = 0) +
+    scale_size_continuous(range = c(1, 8)) +
+    guides(size = "none") +
+    labs(title = title, x = NULL, y = NULL, colour = "Z-score AUC") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, face = "italic"),
+          panel.grid.major = element_line(colour = "grey90"),
+          plot.title = element_text(hjust = 0.5, face = "bold"))
+}
+
+(combined_data |> filter(gene_set == "vitellogenesis") |> dot_plot("Vitellogenesis")) +
+  (combined_data |> filter(gene_set == "ovulation")      |> dot_plot("Ovulation")) +
+  plot_layout(guides = "collect")
+```

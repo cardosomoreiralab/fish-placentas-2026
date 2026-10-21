@@ -1,64 +1,127 @@
 ---
-title: "Figure 4 - transcription-factor activity and SCENIC+ regulatory networks"
+title: "Figure 4"
 output:
   html_document:
     toc: true
-    toc_float: true
-    fig_width: 11
-    fig_height: 6
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
 ---
+
+# Figure 4
+
+## Getting the data
+
+Processed data are deposited at ArrayExpress, genome assemblies at ENA:
+
+| Data | Accession |
+|---|---|
+| Single-nucleus RNA-seq | `E-MTAB-17757` |
+| Single-nucleus ATAC-seq | `E-MTAB-17776` |
+| Genome assemblies | `PRJEB115767` |
+
+Small reference tables are committed in this repository under `data/reference/`
+and need no download: orthology maps, TF lists, SAMap scores, gene-to-GO maps,
+TF activity, and the differential expression tables.
+
+Download the processed objects from the two ArrayExpress accessions into one
+master folder. Every script reads from exactly two places: `DATA_DIR` (what you
+downloaded) and `REF_DIR` (this repository).
+
+```
+<DATA_DIR>/
+|-- snRNA/                                   E-MTAB-17757
+|   `-- seurat/
+|       |-- bifurca_atlas.rds
+|       |-- brachi_atlas.rds
+|       |-- formosa_atlas.rds
+|       |-- gracilis_atlas.rds
+|       |-- gracilis_atlas_pregnant.rds    pregnant samples only
+|       |-- infans_atlas.rds
+|       |-- phallo_atlas.rds
+|       |-- picta_atlas.rds
+|       |-- prolifica_atlas.rds
+|       |-- turneri_atlas.rds
+|       `-- turneri_atlas_pregnant.rds     pregnant samples only
+`-- snATAC/                                  E-MTAB-17776
+    |-- archr/
+    |   `-- <species>/
+    |       |-- ArrowFiles/<Species>_ovary_<library>.arrow
+    |       `-- Save-ArchR-Project.rds
+    `-- scenicplus/
+        `-- <species>/
+            |-- eRegulon_<cell type>.csv
+            `-- raw_TF_gene_pairs.tsv
+```
+
+**Naming conventions.** `<species>` is always the lower-case short name:
+`bifurca`, `brachi`, `formosa`, `gracilis`, `infans`, `phallo`, `picta`,
+`prolifica`, `turneri`. Two renames are needed after download, because the
+deposited archives are flat:
+
+- Seurat objects are deposited under their analysis names
+  (`bifurca_harmony_annotated.rds`, `TurneriAtlas_pregnant_non_pregnant_juvenile.rds`,
+  and so on). Rename each to `<species>_atlas.rds`. *P. gracilis* and
+  *P. turneri* also have a pregnant-only atlas; name those
+  `<species>_atlas_pregnant.rds`. Panels use the combined atlas unless
+  stated otherwise - Figure 1B uses the pregnant-only *P. turneri* atlas.
+- ArchR project objects are deposited as `<species>_Save-ArchR-Project.rds`.
+  Drop the prefix so each becomes `Save-ArchR-Project.rds` inside its own
+  `<species>/` folder, with that species' arrow files in `ArrowFiles/` beside it.
+  `loadArchRProject()` re-points the arrow paths itself on first load. On a
+  network filesystem set `Sys.setenv(HDF5_USE_FILE_LOCKING = "FALSE")` first.
+
+Every atlas carries a `cell_type` column in `meta.data` using one vocabulary
+across all nine species. The scripts below use that column rather than the
+per-species cluster numbers, so the same code runs for every species.
+
+## Panels in this file
+
+| Panel | Chunk | Status |
+|---|---|---|
+| 4B | see below | TF motif enrichment and activity across cell types |
+| 4C | see below | SCENIC+ transcription-factor gene regulatory networks |
 
 ```{r knitr-setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
                       fig.align = "center", dev = "png", dpi = 300)
 ```
 
-# Paths - edit these for your environment
-
-```
-<github>/
-  data/
-    activity_tables/        <species>_activity_df.rds, TF motif activity per cell type
-    SCENICplus/<species>/   eRegulon_direct.tsv, bin_median_AUC_*.csv
-    seurat_objects/         the annotated atlases
-  reference_files/atac/
-    <species>_tf_names.txt        the transcription factors scored per species
-    *__v__turneri_pp.tsv          OrthoFinder one-to-one maps against turneri
-```
-
 ```{r paths}
-# Edit the path below to the directory containing the downloaded data
-DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"
+## PURPOSE : Set the two paths every chunk below reads from, and name the inputs.
+## PRODUCES: DATA_DIR, REF_DIR, SPECIES and the file-path helpers
+## QUESTION: none - configuration only.
 
-REF_DIR <- file.path(dirname(DATA_DIR), "reference_files", "atac")
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"   # master folder described above
+REF_DIR  <- "../data/reference"             # reference tables, committed in this repo
+
 stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
 
 SPECIES <- c("gracilis", "turneri", "bifurca", "picta")
 
-scenic_dir <- function(sp) file.path(DATA_DIR, "SCENICplus", sp)
-tf_names_f <- function(sp) file.path(REF_DIR, paste0(sp, "_tf_names.txt"))
-
-# gracilis and turneri use the combined atlases
-SEURAT_FILES <- c(
-  gracilis = "GracilisAtlas_pregnant_non_pregnant.rds",
-  turneri  = "TurneriAtlas_pregnant_non_pregnant_juvenile.rds",
-  bifurca  = "BifurcaAtlas.rds",
-  picta    = "PictaAtlas.rds"
-)
-seurat_f <- function(sp) file.path(DATA_DIR, "seurat_objects", SEURAT_FILES[[sp]])
+scenic_dir <- function(sp) file.path(DATA_DIR, "snATAC", "scenicplus", sp)
+seurat_f   <- function(sp) file.path(DATA_DIR, "snRNA", "seurat", paste0(sp, "_atlas.rds"))
+activity_f <- function(sp) file.path(REF_DIR, "atac", "TF_activity",
+                                     paste0(sp, "_activity_df.rds"))
+tf_names_f <- function(sp) file.path(REF_DIR, "atac", "TF_lists",
+                                     paste0(sp, "_tf_names.txt"))
 
 ORTHO_FILES <- c(
   gracilis = "gracilis_pp__v__turneri_pp.tsv",
   bifurca  = "bifurca_longest_isoform__v__turneri_pp.tsv",
   picta    = "picta_longest_isoform__v__turneri_pp.tsv"
 )
-ortho_f <- function(sp) file.path(REF_DIR, ORTHO_FILES[[sp]])
+ortho_f <- function(sp) file.path(REF_DIR, "atac", "Orthology", ORTHO_FILES[[sp]])
 ```
 
 ```{r check-inputs}
+## PURPOSE : Check every input exists before any analysis starts.
+## PRODUCES: an error naming the missing files, or a count of those found
+## QUESTION: none - a guard, so a long run cannot fail half way through.
+
 # Fail here, listing what is missing, rather than part way through.
 expected <- c(
-  vapply(SPECIES, function(sp) file.path(DATA_DIR, "activity_tables", paste0(sp, "_activity_df.rds")), character(1)),
+  vapply(SPECIES, function(sp) activity_f(sp), character(1)),
   vapply(SPECIES, function(sp) file.path(scenic_dir(sp), "eRegulon_direct.tsv"), character(1)),
   vapply(SPECIES, function(sp) file.path(scenic_dir(sp), "bin_median_AUC_by_gene.all_cell_types.csv"), character(1)),
   vapply(SPECIES, tf_names_f, character(1)),
@@ -73,6 +136,10 @@ message("all ", length(expected), " inputs found")
 ```
 
 ```{r libraries}
+## PURPOSE : Load the packages the rest of the file needs.
+## PRODUCES: attached packages
+## QUESTION: none - configuration only.
+
 suppressPackageStartupMessages({
   library(Seurat)
   library(tidyverse)
@@ -80,10 +147,15 @@ suppressPackageStartupMessages({
   library(ggraph)
   library(tidygraph)
   library(scales)
+  library(patchwork)
 })
 ```
 
 ```{r vocabulary}
+## PURPOSE : Name the cell types the figure focuses on.
+## PRODUCES: FOCAL_CELL_TYPES
+## QUESTION: none - these are the follicle-lineage types the panels compare.
+
 # Every input uses the display cell type nomenclature
 FOCAL_CELL_TYPES <- c("Germinal epithelium", "Granulosa", "Late follicle cell")
 ```
@@ -91,14 +163,22 @@ FOCAL_CELL_TYPES <- c("Germinal epithelium", "Granulosa", "Late follicle cell")
 # 1. Figure 4B - TF activity across the four species
 
 ```{r activity-matrices}
+## PURPOSE : Read per-species TF motif activity: motif enrichment in each cell type's marker peaks.
+## PRODUCES: activity_dfs - one motif x cell type matrix per species
+## QUESTION: which transcription factor motifs are enriched in the peaks of each cell type?
+
 # TF activity: motif enrichment in each cell type's marker peaks, as -log10
 # adjusted p-values
 activity_dfs <- lapply(SPECIES, function(sp)
-  as.data.frame(readRDS(file.path(DATA_DIR, "activity_tables", paste0(sp, "_activity_df.rds")))))
+  as.data.frame(readRDS(activity_f(sp))))
 names(activity_dfs) <- SPECIES
 ```
 
 ```{r merge-species}
+## PURPOSE : Reduce the four species to the motifs scored in all of them.
+## PRODUCES: one matrix of species_cellType columns
+## QUESTION: none - puts the four species on a common set of motifs so they can be compared.
+
 # One matrix of species_cellType columns, over the motifs scored in all four.
 common_tfs <- Reduce(intersect, lapply(activity_dfs, rownames))
 
@@ -116,7 +196,11 @@ message(length(common_tfs), " motifs, cell types kept: ",
         paste(sort(unique(sub("^[^_]*_", "", colnames(merged_df_filtered)))), collapse = ", "))
 ```
 
-```{r fig4b, fig.height=10, fig.width=24}
+```{r fig4b, fig.height=6, fig.width=11}
+## PURPOSE : Figure 4B - selected TFs across cell types and species, scaled per TF.
+## PRODUCES: the heatmap, printed in the document
+## QUESTION: which TFs are differentially active in the late follicle cell, and is that shared across species?
+
 # Figure 4B: selected TFs across cell types and species, scaled per TF so
 # species with different dynamic ranges can be compared.
 
@@ -171,6 +255,10 @@ ggplot(dot_scaled, aes(TF, CellType, colour = Species, size = Scaled_Activity,
 # 2. Figure 4C - SCENIC+ consensus networks
 
 ```{r load-scenic}
+## PURPOSE : Read the SCENIC+ eRegulons and their binarised activity.
+## PRODUCES: all_eRegulons, auc_binary_list, tf_lists
+## QUESTION: which TF to target links are called, and in which cell types are they active?
+
 # eRegulons and binarised AUC, keeping only +/+ and -/- eRegulons.
 all_eRegulons <- list(); auc_binary_list <- list(); tf_lists <- list()
 
@@ -190,6 +278,10 @@ for (sp in SPECIES) {
 ```
 
 ```{r load-ortho}
+## PURPOSE : Load the one-to-one orthologue maps, each species against turneri.
+## PRODUCES: get_ortho_map() and the per-species maps
+## QUESTION: none - defines the shared gene space the consensus network is built in.
+
 # One-to-one orthologues, each species against turneri
 get_ortho_map <- function(path, ref_col, target_col) {
   df <- read.table(path, fill = TRUE, header = TRUE, sep = "\t")
@@ -207,6 +299,10 @@ ortho_maps <- list(
 ```
 
 ```{r load-atlases}
+## PURPOSE : Load the atlases so a TF can be required to be expressed where its eRegulon is active.
+## PRODUCES: atlas_list
+## QUESTION: is the TF actually transcribed in the cell type its regulon is called active in?
+
 # The atlases, used to require that a TF is expressed where its eRegulon is
 # called active.
 rna_threshold <- 0.5
@@ -228,6 +324,10 @@ pseudobulk <- lapply(atlas_list, get_expressed_tfs)
 ```
 
 ```{r network-params}
+## PURPOSE : Set the thresholds that decide which links and regulons are kept.
+## PRODUCES: rank_cutoff, max_cell_types and the other network parameters
+## QUESTION: none - configuration only.
+
 # Network thresholds.
 rank_cutoff       <- 0.50   # keep links in the best half of triplet ranks
 max_cell_types    <- 5      # an eRegulon active in more than this is not cell type specific
@@ -236,6 +336,10 @@ number_of_species <- 1      # species support required
 ```
 
 ```{r network-helper}
+## PURPOSE : Define the function that draws one TF network.
+## PRODUCES: plot_tf_network()
+## QUESTION: none - plotting helper.
+
 # Draw one network.
 plot_tf_network <- function(edge_df, active_regs, title_text,
                             tf_species_counts = NULL, is_core = TRUE) {
@@ -262,16 +366,22 @@ plot_tf_network <- function(edge_df, active_regs, title_text,
                             labels = c("Activation", "Repression")) +
     scale_edge_width(name = "Confidence", range = c(0.2, 1.5)) +
     scale_edge_alpha_manual(values = c("1" = 1, "0" = 0.3)) +
-    scale_size_manual(values = c("TRUE" = 5, "FALSE" = 2.5), guide = "none") +
+    ## node and label sizes raised so the TF names stay readable when the
+    ## networks are placed side by side
+    scale_size_manual(values = c("TRUE" = 6.5, "FALSE" = 3.5), guide = "none") +
     scale_alpha_manual(values = c("TRUE" = 1, "FALSE" = 0.7), guide = "none") +
     scale_color_viridis_c(name = "Species active in", limits = c(1, 4), breaks = 1:4) +
-    theme_graph(base_family = "sans") +
+    theme_graph(base_family = "sans", base_size = 13) +
     labs(title = title_text, subtitle = "Core interactions between the top regulons") +
     theme(legend.position = "bottom", legend.box = "vertical")
 }
 ```
 
 ```{r rankings-per-species}
+## PURPOSE : Find the cell-type-specific active eRegulons in each species.
+## PRODUCES: all_rankings, all_raw_edges
+## QUESTION: which regulons are specific to the late follicle cell within each species?
+
 # Active eRegulons per species, kept where the TF is also expressed there.
 # These inform the consensus
 all_rankings <- list(); all_raw_edges <- list()
@@ -295,7 +405,11 @@ for (sp in SPECIES) {
 }
 ```
 
-```{r consensus, fig.height=24, fig.width=24}
+```{r consensus, fig.height=9, fig.width=20}
+## PURPOSE : Figure 4C - place every species in turneri gene space and keep the core TFs.
+## PRODUCES: the consensus network, printed in the document
+## QUESTION: which regulators of the late follicle cell are supported by more than one species?
+
 # Figure 4C: every species placed in turneri gene space, so a TF counts once
 # however many species support it. Core networks only.
 turneri_edges <- all_raw_edges[["turneri"]]
@@ -345,6 +459,7 @@ consensus_edges <- bind_rows(mapped_edges) %>%
   summarise(avg_rank = mean(triplet_rank_perc, na.rm = TRUE),
             species_count = n_distinct(species), .groups = "drop")
 
+panels <- list()
 for (ct in intersect(FOCAL_CELL_TYPES, unique(consensus_activity$cell_type))) {
   ct_data <- consensus_activity %>% filter(cell_type == ct)
 
@@ -367,12 +482,24 @@ for (ct in intersect(FOCAL_CELL_TYPES, unique(consensus_activity$cell_type))) {
            to   = recode(to,   !!!id_to_full_name))
 
   p <- plot_tf_network(core, recode(top_active, !!!id_to_full_name),
-                       paste0("Consensus | ", ct), tf_species_counts = counts_lookup)
-  if (!is.null(p)) print(p) else
+                       ct, tf_species_counts = counts_lookup)
+  if (!is.null(p)) panels[[ct]] <- p else
     message(ct, ": no core interactions between the top ", eRegulon_count, " TFs")
 }
+
+## one row, sharing a single legend, rather than one plot per page
+if (length(panels)) {
+  wrap_plots(panels, nrow = 1) +
+    plot_layout(guides = "collect") +
+    plot_annotation(title = "Consensus networks across the four species") &
+    theme(legend.position = "bottom", legend.box = "horizontal")
+} else message("no consensus networks to draw")
 ```
 
 ```{r session}
+## PURPOSE : Record package versions for reproducibility.
+## PRODUCES: sessionInfo()
+## QUESTION: none - provenance.
+
 sessionInfo()
 ```

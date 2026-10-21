@@ -1,0 +1,89 @@
+species,label,cluster,cell_type,samap_score,margin,source
+bifurca,bi_0,0,Germinal epithelium,0.482,0.256,SAMap propagation
+bifurca,bi_2,2,Late follicle cell,0.377,0.295,SAMap propagation
+bifurca,bi_3,3,Macrophage,0.815,0.481,SAMap propagation
+bifurca,bi_4,4,Stromal,0.287,0.162,SAMap propagation
+bifurca,bi_6,6,Erythrocyte,0.83,0.762,SAMap propagation
+bifurca,bi_7,7,Stromal,0.472,0.387,SAMap propagation
+bifurca,bi_8,8,Granulosa,0.908,0.107,SAMap propagation
+bifurca,bi_12,12,Endothelial,0.762,0.724,SAMap propagation
+bifurca,bi_19,19,Yolk sac,0.688,0.669,SAMap propagation
+brachi,br_0,0,Granulosa,0.902,0.109,SAMap propagation
+brachi,br_1,1,Late follicle cell,0.586,0.075,SAMap propagation
+brachi,br_3,3,Erythrocyte,0.069,0.007,SAMap propagation
+brachi,br_5,5,Macrophage,0.813,0.753,SAMap propagation
+brachi,br_6,6,Erythrocyte,0.417,0.28,SAMap propagation
+brachi,br_7,7,Endothelial,0.826,0.754,SAMap propagation
+brachi,br_9,9,Late follicle cell,0.05,0.008,SAMap propagation
+brachi,br_11,11,Erythrocyte,0.437,0.085,SAMap propagation
+brachi,br_13,13,Yolk sac,0.613,0.561,SAMap propagation
+brachi,br_14,14,Yolk sac,0.71,0.685,SAMap propagation
+formosa,fo_0,0,Germinal epithelium,0.487,0.313,SAMap propagation
+formosa,fo_1,1,Stromal,0.592,0.53,SAMap propagation
+formosa,fo_2,2,Granulosa,0.798,0.037,SAMap propagation
+formosa,fo_5,5,Macrophage,0.817,0.704,SAMap propagation
+formosa,fo_6,6,Endothelial,0.704,0.603,SAMap propagation
+formosa,fo_7,7,Late follicle cell,0.279,0.238,SAMap propagation
+formosa,fo_8,8,Granulosa,0.348,0.024,SAMap propagation
+formosa,fo_9,9,Erythrocyte,0.971,0.956,SAMap propagation
+formosa,fo_11,11,Yolk sac,0.421,0.381,SAMap propagation
+gracilis,gr_0,0,Macrophage,0.839,0.746,SAMap propagation
+gracilis,gr_2,2,Germinal epithelium,0.552,0.45,SAMap propagation
+gracilis,gr_3,3,Late follicle cell,0.662,0.579,SAMap propagation
+gracilis,gr_4,4,Granulosa,0.912,0.036,SAMap propagation
+gracilis,gr_5,5,Erythrocyte,0.795,0.256,SAMap propagation
+gracilis,gr_7,7,Stromal,0.696,0.637,SAMap propagation
+gracilis,gr_10,10,Theca,0.473,0.006,SAMap propagation
+gracilis,gr_11,11,Endothelial,0.906,0.898,SAMap propagation
+gracilis,gr_14,14,Yolk sac,0.794,0.754,SAMap propagation
+infans,in_0,0,Stromal,0.665,0.499,SAMap propagation
+infans,in_2,2,Erythrocyte,0.751,0.686,SAMap propagation
+infans,in_3,3,Germinal epithelium,0.506,0.015,SAMap propagation
+infans,in_4,4,Macrophage,0.782,0.709,SAMap propagation
+infans,in_5,5,Late follicle cell,0.222,0.102,SAMap propagation
+infans,in_6,6,Granulosa,0.455,0.121,SAMap propagation
+infans,in_7,7,Endothelial,0.724,0.693,SAMap propagation
+infans,in_12,12,Late follicle cell,0.362,0.261,SAMap propagation
+phallo,ph_0,0,Theca,0.878,0.058,SAMap propagation
+phallo,ph_1,1,Germinal epithelium,0.613,0.366,SAMap propagation
+phallo,ph_3,3,Stromal,0.053,0.021,SAMap propagation
+phallo,ph_4,4,Endothelial,0.856,0.821,SAMap propagation
+phallo,ph_7,7,Granulosa,0.401,0.227,SAMap propagation
+phallo,ph_8,8,Macrophage,0.857,0.817,SAMap propagation
+phallo,ph_10,10,Erythrocyte,0.868,0.814,SAMap propagation
+phallo,ph_15,15,Yolk sac,0.718,0.695,SAMap propagation
+picta,pi_1,1,Erythrocyte,0.807,0.632,SAMap propagation
+picta,pi_2,2,Macrophage,0.568,0.462,SAMap propagation
+picta,pi_3,3,Granulosa,0.733,0.048,SAMap propagation
+picta,pi_4,4,Stromal,0.494,0.291,SAMap propagation
+picta,pi_5,5,Germinal epithelium,0.441,0.194,SAMap propagation
+picta,pi_6,6,Late follicle cell,0.067,0.017,SAMap propagation
+picta,pi_7,7,Endothelial,0.488,0.432,SAMap propagation
+prolifica,pr_1,1,Late follicle cell,0.349,0.288,SAMap propagation
+prolifica,pr_2,2,Late follicle cell,1.0,1.0,published figure 1C
+prolifica,pr_3,3,Granulosa,1.0,1.0,published figure 1C
+prolifica,pr_4,4,Stromal,1.0,1.0,published figure 1C
+prolifica,pr_5,5,Erythrocyte,1.0,1.0,published figure 1C
+prolifica,pr_6,6,Germinal epithelium,1.0,1.0,published figure 1C
+prolifica,pr_8,8,Stromal,0.067,0.0,SAMap propagation
+prolifica,pr_9,9,Yolk sac,1.0,1.0,published figure 1C
+prolifica,pr_10,10,Endothelial,1.0,1.0,published figure 1C
+prolifica,pr_11,11,Embryonic,1.0,1.0,published figure 1C
+prolifica,pr_12,12,Macrophage,1.0,1.0,published figure 1C
+prolifica,pr_13,13,GC,1.0,1.0,published figure 1C
+prolifica,pr_16,16,Neutrophil,1.0,1.0,published figure 1C
+prolifica,pr_17,17,Theca,1.0,1.0,published figure 1C
+turneri,tu_0,0,Late follicle cell,1.0,1.0,published figure 1C
+turneri,tu_1,1,Stromal,1.0,1.0,published figure 1C
+turneri,tu_2,2,Macrophage,1.0,1.0,published figure 1C
+turneri,tu_3,3,Theca,1.0,1.0,published figure 1C
+turneri,tu_4,4,Erythrocyte,1.0,1.0,published figure 1C
+turneri,tu_5,5,Late follicle cell,0.181,0.133,SAMap propagation
+turneri,tu_7,7,Stromal,0.446,0.399,SAMap propagation
+turneri,tu_8,8,Germinal epithelium,1.0,1.0,published figure 1C
+turneri,tu_9,9,Late follicle cell,0.048,0.031,SAMap propagation
+turneri,tu_10,10,Granulosa,1.0,1.0,published figure 1C
+turneri,tu_11,11,Endothelial,1.0,1.0,published figure 1C
+turneri,tu_12,12,Yolk sac,1.0,1.0,published figure 1C
+turneri,tu_16,16,Embryonic,1.0,1.0,published figure 1C
+turneri,tu_20,20,Neutrophil,1.0,1.0,published figure 1C

@@ -1,0 +1,254 @@
+---
+title: "Figure 2"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
+---
+
+# Figure 2
+
+## Getting the data
+
+Processed data are deposited at ArrayExpress, genome assemblies at ENA:
+
+| Data | Accession |
+|---|---|
+| Single-nucleus RNA-seq | `E-MTAB-17757` |
+| Single-nucleus ATAC-seq | `E-MTAB-17776` |
+| Genome assemblies | `PRJEB115767` |
+
+Small reference tables are committed in this repository under `data/reference/`
+and need no download: orthology maps, TF lists, SAMap scores, gene-to-GO maps,
+TF activity, and the differential expression tables.
+
+Download the processed objects from the two ArrayExpress accessions into one
+master folder. Every script reads from exactly two places: `DATA_DIR` (what you
+downloaded) and `REF_DIR` (this repository).
+
+```
+<DATA_DIR>/
+|-- snRNA/                                   E-MTAB-17757
+|   `-- seurat/
+|       |-- bifurca_atlas.rds
+|       |-- brachi_atlas.rds
+|       |-- formosa_atlas.rds
+|       |-- gracilis_atlas.rds
+|       |-- gracilis_atlas_pregnant.rds    pregnant samples only
+|       |-- infans_atlas.rds
+|       |-- phallo_atlas.rds
+|       |-- picta_atlas.rds
+|       |-- prolifica_atlas.rds
+|       |-- turneri_atlas.rds
+|       `-- turneri_atlas_pregnant.rds     pregnant samples only
+`-- snATAC/                                  E-MTAB-17776
+    |-- archr/
+    |   `-- <species>/
+    |       |-- ArrowFiles/<Species>_ovary_<library>.arrow
+    |       `-- Save-ArchR-Project.rds
+    `-- scenicplus/
+        `-- <species>/
+            |-- eRegulon_<cell type>.csv
+            `-- raw_TF_gene_pairs.tsv
+```
+
+**Naming conventions.** `<species>` is always the lower-case short name:
+`bifurca`, `brachi`, `formosa`, `gracilis`, `infans`, `phallo`, `picta`,
+`prolifica`, `turneri`. Two renames are needed after download, because the
+deposited archives are flat:
+
+- Seurat objects are deposited under their analysis names
+  (`bifurca_harmony_annotated.rds`, `TurneriAtlas_pregnant_non_pregnant_juvenile.rds`,
+  and so on). Rename each to `<species>_atlas.rds`. *P. gracilis* and
+  *P. turneri* also have a pregnant-only atlas; name those
+  `<species>_atlas_pregnant.rds`. Panels use the combined atlas unless
+  stated otherwise - Figure 1B uses the pregnant-only *P. turneri* atlas.
+- ArchR project objects are deposited as `<species>_Save-ArchR-Project.rds`.
+  Drop the prefix so each becomes `Save-ArchR-Project.rds` inside its own
+  `<species>/` folder, with that species' arrow files in `ArrowFiles/` beside it.
+  `loadArchRProject()` re-points the arrow paths itself on first load. On a
+  network filesystem set `Sys.setenv(HDF5_USE_FILE_LOCKING = "FALSE")` first.
+
+Every atlas carries a `cell_type` column in `meta.data` using one vocabulary
+across all nine species. The scripts below use that column rather than the
+per-species cluster numbers, so the same code runs for every species.
+
+## Panels in this file
+
+| Panel | Chunk | Status |
+|---|---|---|
+| 2B | `fig2b` | SAMap correlation heatmap, all nine poeciliids |
+| 2D | `fig2d` | *P. turneri* cell-type composition, adult against juvenile |
+| 2E | `fig2e` | *P. gracilis* cell-type composition, pregnant against non-pregnant |
+
+The cluster set used below is the same one behind Supplementary Figure 4A, which
+re-plots it as a dendrogram.
+
+```{r knitr-setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 300)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+## PURPOSE : Set the two paths every chunk below reads from, and load packages.
+## PRODUCES: DATA_DIR, REF_DIR
+## QUESTION: none - configuration only.
+
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"   # master folder described above
+REF_DIR  <- "../data/reference"             # reference tables, committed in this repo
+
+stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
+
+suppressPackageStartupMessages({
+  library(viridis)
+  library(pheatmap)
+  library(dplyr)
+  library(ggplot2)
+  library(Seurat)
+})
+```
+
+```{r samap-matrix}
+## PURPOSE : Read the pairwise SAMap mapping scores for all nine poeciliids.
+## PRODUCES: mat - a cluster x cluster matrix of SAMap scores
+## QUESTION: how transcriptionally similar is each cell cluster to each cluster
+##           in every other species?
+
+mat <- as.matrix(read.csv(
+  file.path(REF_DIR, "rna", "SAMap", "MappingValues_Pairwise_samap.txt"),
+  row.names = 1))
+
+## The matrix is labelled <two-letter species>_<cluster number>. The cleaned
+## atlases no longer carry that clustering, so the cluster -> cell type key is
+## committed alongside the matrix; see its `source` column for how each was set.
+CLUSTER_KEY <- read.csv(file.path(REF_DIR, "rna", "SAMap", "cluster_cell_types.csv"))
+cell_type_of <- setNames(CLUSTER_KEY$cell_type, CLUSTER_KEY$label)
+
+## a species may have several clusters of one type, so the cluster id is kept in
+## the label to keep rows distinguishable and traceable back to the matrix
+pretty_label <- function(x) ifelse(is.na(cell_type_of[x]), x,
+                                   sprintf("%s (%s)", cell_type_of[x], x))
+
+dim(mat)
+```
+
+```{r fig2b, fig.width = 10, fig.height = 9}
+## PURPOSE : Figure 2B - SAMap scores between the retained ovarian clusters of
+##           all nine poeciliids, clustered on correlation distance.
+## PRODUCES: the heatmap, printed in the document
+## QUESTION: do homologous ovarian cell types map to one another across the whole
+##           family, including the non-placental species?
+
+## clusters retained after QC, one block per species
+samap_clusters <- c(
+  "bi_0","bi_2","bi_3","bi_6","bi_7","bi_8","bi_12","bi_19",
+  "pr_1","pr_3","pr_5","pr_6","pr_8","pr_9","pr_10","pr_12","pr_17",
+  "tu_1","tu_2","tu_3","tu_4","tu_5","tu_9","tu_10","tu_11","tu_12",
+  "fo_0","fo_1","fo_2","fo_5","fo_6","fo_7","fo_8","fo_9","fo_11",
+  "pi_1","pi_2","pi_3","pi_4","pi_5","pi_6","pi_7",
+  "in_0","in_2","in_3","in_4","in_5","in_6","in_7","in_12",
+  "gr_0","gr_2","gr_3","gr_4","gr_5","gr_7","gr_10","gr_11","gr_14",
+  "br_0","br_1","br_3","br_5","br_6","br_7","br_9","br_11","br_13","br_14")
+
+## the matrix is square, so the same labels index rows and columns;
+## zebrafish is the outgroup used to build the scores, not a comparison
+## subset in the matrix's own order, as Diego's script does
+keep <- setdiff(rownames(mat)[rownames(mat) %in% samap_clusters],
+                grep("^ze_", rownames(mat), value = TRUE))
+samap_mat <- mat[keep, keep]
+
+## a cluster maps to itself perfectly by definition
+diag(samap_mat) <- 1
+
+rownames(samap_mat) <- colnames(samap_mat) <- pretty_label(rownames(samap_mat))
+
+## the published panel is greyscale, white at 0 and black at 1
+pheatmap(t(samap_mat),
+         color                    = colorRampPalette(c("white", "black"))(100),
+         clustering_distance_rows = "correlation",
+         clustering_distance_cols = "correlation",
+         clustering_method        = "ward.D2",
+         main                     = "SAMap scores across nine poeciliids",
+         angle_col                = 45,
+         fontsize = 8, fontsize_row = 8, fontsize_col = 6,
+         border_color             = NA)
+```
+
+```{r fig2d-2e-data}
+## PURPOSE : For each cell type, what share of its nuclei came from each stage.
+## PRODUCES: stage_df - cell type x stage proportions for both species
+## QUESTION: none - shared input for the two panels below.
+
+## P. turneri is split adult against juvenile, with pregnant and non-pregnant
+## pooled into adult; P. gracilis is split pregnant against non-pregnant.
+SPLIT <- list(
+  turneri  = list(levels = c("Adult", "Juvenile"),
+                  rule = function(s) ifelse(grepl("juvenile", s, ignore.case = TRUE),
+                                            "Juvenile", "Adult")),
+  gracilis = list(levels = c("Pregnant", "Non-Pregnant"),
+                  rule = function(s) ifelse(grepl("non", s, ignore.case = TRUE),
+                                            "Non-Pregnant", "Pregnant"))
+)
+
+stage_for <- function(sp) {
+  obj <- readRDS(file.path(DATA_DIR, "snRNA", "seurat", paste0(sp, "_atlas.rds")))
+  md  <- obj@meta.data
+  if (!"Sample_status" %in% names(md))
+    stop(sp, ": no Sample_status column. Columns: ", paste(names(md), collapse = ", "))
+  message(sp, " Sample_status values: ",
+          paste(sort(unique(as.character(md$Sample_status))), collapse = ", "))
+
+  g <- SPLIT[[sp]]
+  md |>
+    mutate(stage     = factor(g$rule(as.character(Sample_status)), levels = g$levels),
+           cell_type = as.character(cell_type)) |>
+    filter(!is.na(stage), !is.na(cell_type)) |>
+    count(cell_type, stage) |>
+    group_by(cell_type) |>
+    mutate(proportion = n / sum(n)) |>      # within each cell type, so bars reach 100%
+    ungroup() |>
+    mutate(species = sp)
+}
+
+stage_df <- bind_rows(lapply(c("turneri", "gracilis"), stage_for))
+
+## Seurat's default two-colour palette: ggplot's hue scale for n = 2
+SEURAT_TWO <- scales::hue_pal()(2)          # "#F8766D" red, "#00BFC4" teal
+
+## the late follicle cell is the panel's subject, so it leads; the rest follow
+## in decreasing size
+stage_bars <- function(sp) {
+  d <- filter(stage_df, species == sp)
+  ord <- d |> group_by(cell_type) |> summarise(n = sum(n), .groups = "drop") |>
+    arrange(desc(n)) |> pull(cell_type)
+  ord <- c(intersect("Late follicle cell", ord), setdiff(ord, "Late follicle cell"))
+
+  ggplot(mutate(d, cell_type = factor(cell_type, levels = ord)),
+         aes(cell_type, proportion, fill = stage)) +
+    geom_col(width = 0.8) +
+    scale_fill_manual(values = setNames(SEURAT_TWO, SPLIT[[sp]]$levels), name = "Stage") +
+    scale_y_continuous(expand = c(0, 0), labels = scales::percent) +
+    labs(x = NULL, y = NULL) +
+    theme_classic() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8),
+          legend.position = "right")
+}
+```
+
+```{r fig2d, fig.width = 7, fig.height = 4}
+## PURPOSE : Figure 2D - P. turneri composition, adult against juvenile.
+## PRODUCES: the stacked bars, printed in the document
+## QUESTION: which cell types are present only once the ovary is adult?
+
+stage_bars("turneri")
+```
+
+```{r fig2e, fig.width = 7, fig.height = 4}
+## PURPOSE : Figure 2E - P. gracilis composition, pregnant against non-pregnant.
+## PRODUCES: the stacked bars, printed in the document
+## QUESTION: which cell types change in proportion with pregnancy?
+
+stage_bars("gracilis")
+```

@@ -1,0 +1,296 @@
+---
+title: "Figure 5"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
+---
+
+# Figure 5
+
+## Getting the data
+
+Processed data are deposited at ArrayExpress, genome assemblies at ENA:
+
+| Data | Accession |
+|---|---|
+| Single-nucleus RNA-seq | `E-MTAB-17757` |
+| Single-nucleus ATAC-seq | `E-MTAB-17776` |
+| Genome assemblies | `PRJEB115767` |
+
+Small reference tables are committed in this repository under `data/reference/`
+and need no download: orthology maps, TF lists, SAMap scores, gene-to-GO maps,
+TF activity, and the differential expression tables.
+
+Download the processed objects from the two ArrayExpress accessions into one
+master folder. Every script reads from exactly two places: `DATA_DIR` (what you
+downloaded) and `REF_DIR` (this repository).
+
+```
+<DATA_DIR>/
+|-- snRNA/                                   E-MTAB-17757
+|   `-- seurat/
+|       |-- bifurca_atlas.rds
+|       |-- brachi_atlas.rds
+|       |-- formosa_atlas.rds
+|       |-- gracilis_atlas.rds
+|       |-- gracilis_atlas_pregnant.rds    pregnant samples only
+|       |-- infans_atlas.rds
+|       |-- phallo_atlas.rds
+|       |-- picta_atlas.rds
+|       |-- prolifica_atlas.rds
+|       |-- turneri_atlas.rds
+|       `-- turneri_atlas_pregnant.rds     pregnant samples only
+`-- snATAC/                                  E-MTAB-17776
+    |-- archr/
+    |   `-- <species>/
+    |       |-- ArrowFiles/<Species>_ovary_<library>.arrow
+    |       `-- Save-ArchR-Project.rds
+    `-- scenicplus/
+        `-- <species>/
+            |-- eRegulon_<cell type>.csv
+            `-- raw_TF_gene_pairs.tsv
+```
+
+**Naming conventions.** `<species>` is always the lower-case short name:
+`bifurca`, `brachi`, `formosa`, `gracilis`, `infans`, `phallo`, `picta`,
+`prolifica`, `turneri`. Two renames are needed after download, because the
+deposited archives are flat:
+
+- Seurat objects are deposited under their analysis names
+  (`bifurca_harmony_annotated.rds`, `TurneriAtlas_pregnant_non_pregnant_juvenile.rds`,
+  and so on). Rename each to `<species>_atlas.rds`. *P. gracilis* and
+  *P. turneri* also have a pregnant-only atlas; name those
+  `<species>_atlas_pregnant.rds`. Panels use the combined atlas unless
+  stated otherwise - Figure 1B uses the pregnant-only *P. turneri* atlas.
+- ArchR project objects are deposited as `<species>_Save-ArchR-Project.rds`.
+  Drop the prefix so each becomes `Save-ArchR-Project.rds` inside its own
+  `<species>/` folder, with that species' arrow files in `ArrowFiles/` beside it.
+  `loadArchRProject()` re-points the arrow paths itself on first load. On a
+  network filesystem set `Sys.setenv(HDF5_USE_FILE_LOCKING = "FALSE")` first.
+
+Every atlas carries a `cell_type` column in `meta.data` using one vocabulary
+across all nine species. The scripts below use that column rather than the
+per-species cluster numbers, so the same code runs for every species.
+
+## Panels in this file
+
+| Panel | Chunk | Status |
+|---|---|---|
+| 5E | `fig5e` | origin of the TF-DEG interactions, two lineages |
+
+Panel 5E covers *P. turneri* and *P. bifurca* only: the ATAC and SCENIC+
+analyses were run for four species, which gives two placental lineages with a
+non-placental sister to compare against.
+
+Panels 5B, 5C and 5D - the GO terms, the Venn of DEG overlap and the upset of
+genes grouped by biological process - are not reproduced here. The grouping it uses is not defined by any table in this repository, so
+it is not reproduced here.
+
+```{r knitr-setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 300)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+## PURPOSE : Set the two paths every chunk below reads from, and load packages.
+## PRODUCES: DATA_DIR, REF_DIR, analysis parameters
+## QUESTION: none - configuration only.
+
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"   # master folder described above
+REF_DIR  <- "../data/reference"             # reference tables, committed in this repo
+
+stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
+
+suppressPackageStartupMessages({
+  library(dplyr); library(readr); library(ggplot2); library(patchwork)
+})
+
+## the cell-type label as it appears in the SCENIC+ AUC matrices, which use
+## the paper's vocabulary
+CELLTYPE  <- "Late follicle cell"
+DIRECTION <- "up"      # "up" uses +/+ eRegulons, "down" uses -/-
+PADJ_THR  <- 0.05
+LFC_THR   <- 2
+
+## panel 5E runs only over the pairs that have SCENIC+ output
+PAIRS <- list(
+  turneri = list(placental = "turneri", sister = "gracilis",
+                 label = "P. turneri",
+                 deg   = "fw_final_DEG_all_lineages_GT.csv",
+                 lfc   = "log2FoldChange_turneri",
+                 padj  = "padj_gracilis_turneri",
+                 map   = "gracilis_pp__v__turneri_pp.tsv",
+                 from  = "turneri_pp", to = "gracilis_pp"),
+  bifurca = list(placental = "bifurca", sister = "picta",
+                 label = "P. bifurca",
+                 deg   = "fw_final_DEG_all_lineages_PB.csv",
+                 lfc   = "log2FoldChange_bifurca",
+                 padj  = "padj_picta_bifurca",
+                 map   = "picta_longest_isoform__v__bifurca_longest_isoform.tsv",
+                 from  = "bifurca_longest_isoform", to = "picta_longest_isoform"))
+```
+
+```{r fig5e-helpers}
+## PURPOSE : Shared helpers - gene-id normalisation and 1:1 orthologue loading.
+## PRODUCES: std_ids(), load_ortho()
+## QUESTION: none - the gene ids carry isoform suffixes and zero padding that
+##           differ between files, so they must be normalised before matching.
+
+std_ids <- function(x) {
+  id <- sub("-T[0-9]+$", "", as.character(x))
+  id <- sub("^(g[0-9]+)(-.*)?$", "\\1", id)
+  gsub("^g0+", "g", id)
+}
+
+## Which eRegulons are called active in one cell type, read from the binarised
+## AUC matrix. Its column names carry a target-count suffix - "..._(684g)" -
+## that the cell-type-specific eRegulon tables do not, so it is stripped first.
+active_eregulons <- function(sp, cell_type) {
+  a <- read_csv(file.path(DATA_DIR, "snATAC", "scenicplus", sp,
+                          "bin_median_AUC_by_gene.all_cell_types.csv"),
+                show_col_types = FALSE)
+  ct <- as.character(a[[1]])
+  if (!cell_type %in% ct)
+    stop(sp, ": '", cell_type, "' is not a row of the AUC matrix. Available: ",
+         paste(ct, collapse = ", "))
+  v <- unlist(a[ct == cell_type, -1, drop = FALSE])
+  sub("_\\([0-9]+[gr]\\)$", "", names(v)[!is.na(v) & v != 0])
+}
+
+## keep only unambiguous 1:1 pairs; anything with a comma is one-to-many
+load_ortho <- function(path, from, to) {
+  df <- read.table(path, sep = "\t", header = TRUE, fill = TRUE,
+                   quote = "", stringsAsFactors = FALSE)
+  df <- df[!grepl(",", df[[from]]) & !grepl(",", df[[to]]), c(from, to)]
+  df[[from]] <- std_ids(df[[from]]); df[[to]] <- std_ids(df[[to]])
+  df <- df[nzchar(df[[from]]) & nzchar(df[[to]]), ]
+  df[!duplicated(df[[from]]) & !duplicated(df[[to]]), ]
+}
+```
+
+### 5E - origin of the TF-DEG interactions
+
+Each placental species has a set of genes up-regulated in the late follicle cell
+relative to its non-placental sister, and a SCENIC+ network of transcription
+factors regulating them. The cell-type-specific eRegulons are the ones the
+original analysis produced, committed under
+`data/reference/atac/cell_type_specific_eRegulons/` as gzipped CSVs. For every TF-DEG edge we ask whether the equivalent edge
+already existed in the sister species' network. An edge is **pre-existing** if
+both partners have 1:1 orthologues in the sister and that TF-gene pair is present
+in the sister's network, and **novel** otherwise. Edges where either partner
+lacks a 1:1 orthologue cannot be tested and are excluded.
+
+```{r fig5e-classify}
+## PURPOSE : Build the TF-DEG edge set for each placental species and classify
+##           every testable edge as pre-existing or novel against its sister.
+## PRODUCES: pie_df - counts and percentages per species and class
+## QUESTION: did the late follicle cell's regulatory programme get rewired, or
+##           does it reuse connections that already existed in the sister?
+
+sign_pattern <- if (DIRECTION == "up") "\\+/\\+" else "-/-"
+
+classify_pair <- function(P) {
+  map_path <- file.path(REF_DIR, "atac", "Orthology", P$map)
+  if (!file.exists(map_path))
+    stop("Missing orthology map: ", map_path,
+         "\nAdd it to data/reference/atac/Orthology/ before running this chunk.")
+
+  ## ---- DEGs, called in the sister's gene space, translated to the placental
+  deg <- read_csv(file.path(REF_DIR, "rna", "DEGs", P$deg), show_col_types = FALSE)
+  keep <- deg$lineage == P$placental &
+          !is.na(deg[[P$padj]]) & deg[[P$padj]] < PADJ_THR &
+          !is.na(deg[[P$lfc]])  &
+          if (DIRECTION == "up") deg[[P$lfc]] > LFC_THR else deg[[P$lfc]] < -LFC_THR
+  sister_ids <- unique(std_ids(deg$gene_id[keep]))
+
+  om  <- load_ortho(map_path, P$from, P$to)          # placental -> sister
+  lut_sister_to_plac <- setNames(om[[P$from]], om[[P$to]])
+  deg_plac <- unique(na.omit(unname(lut_sister_to_plac[sister_ids])))
+
+  ## ---- the placental network, restricted to DEG targets
+  ## The cell-type-specific eRegulons are read directly, as the original
+  ## analysis did; they are committed under
+  ## data/reference/atac/cell_type_specific_eRegulons/. The binarised AUC matrix
+  ## then gates them to those actually active in this cell type.
+  f <- file.path(REF_DIR, "atac", "cell_type_specific_eRegulons",
+                 sprintf("%s_eRegulon_LFC.csv.gz", P$placental))
+  if (!file.exists(f)) stop("Missing cell-type-specific eRegulons: ", f)
+
+  active <- grep(sign_pattern, active_eregulons(P$placental, CELLTYPE), value = TRUE)
+  if (!length(active))
+    stop(P$placental, ": no ", DIRECTION, "-direction eRegulons are active in ",
+         CELLTYPE, ". The deposited AUC matrices contain only +/+ eRegulons, so ",
+         "DIRECTION must be \"up\".")
+
+  ereg <- read_csv(f, show_col_types = FALSE) |>
+    filter(grepl(sign_pattern, eRegulon_name), eRegulon_name %in% active) |>
+    mutate(TF_id = std_ids(TF_id), Gene_id = std_ids(Gene_id)) |>
+    distinct(TF_id, Gene_id) |>
+    filter(Gene_id %in% deg_plac)
+
+  cat(sprintf("%-10s %d eRegulons active in %s -> %d edges before the DEG filter\n",
+              P$placental, length(active), CELLTYPE, nrow(ereg)))
+
+  ## ---- the sister's full network, as the reference for "already existed"
+  raw <- read_tsv(file.path(DATA_DIR, "snATAC", "scenicplus", P$sister,
+                            "raw_TF_gene_pairs.tsv"),
+                  col_names = c("TF", "Gene"), show_col_types = FALSE)
+  sister_edges <- unique(paste(std_ids(raw$TF), std_ids(raw$Gene), sep = "|"))
+
+  ## ---- classify, dropping edges that cannot be tested
+  lut_plac_to_sister <- setNames(om[[P$to]], om[[P$from]])
+  ed <- ereg |>
+    mutate(tf_s   = unname(lut_plac_to_sister[TF_id]),
+           gene_s = unname(lut_plac_to_sister[Gene_id]),
+           testable = !is.na(tf_s) & !is.na(gene_s),
+           status = ifelse(paste(tf_s, gene_s, sep = "|") %in% sister_edges,
+                           "Pre-existing TF-DEG interaction",
+                           "Novel TF-DEG interaction"))
+
+  cat(sprintf("%-10s %d DEGs -> %d TF-DEG edges, %d testable (%d dropped, no 1:1 orthologue)\n",
+              P$placental, length(deg_plac), nrow(ed), sum(ed$testable), sum(!ed$testable)))
+
+  ed |> filter(testable) |> count(status, name = "Count") |> mutate(species = P$label)
+}
+
+pie_df <- bind_rows(lapply(PAIRS, classify_pair)) |>
+  group_by(species) |>
+  mutate(Prop  = Count / sum(Count),
+         Label = sprintf("%d\n(%.1f%%)", Count, 100 * Prop)) |>
+  ungroup() |>
+  mutate(status  = factor(status, levels = c("Pre-existing TF-DEG interaction",
+                                             "Novel TF-DEG interaction")),
+         species = factor(species, levels = c("P. turneri", "P. bifurca")))
+
+pie_df
+```
+
+```{r fig5e, fig.width = 3.2, fig.height = 7}
+## PURPOSE : Figure 5E - one pie per species, pre-existing against novel.
+## PRODUCES: the two pie charts with a shared legend, printed in the document
+## QUESTION: what fraction of the late follicle cell's regulatory interactions
+##           are evolutionarily new in each placental lineage?
+
+STATUS_COLS <- c("Pre-existing TF-DEG interaction" = "#1B7837",
+                 "Novel TF-DEG interaction"        = "#D55E00")
+
+one_pie <- function(sp) {
+  ggplot(filter(pie_df, species == sp), aes(x = "", y = Prop, fill = status)) +
+    geom_col(width = 1, colour = "white", linewidth = 0.4) +
+    coord_polar("y", start = 0) +
+    geom_text(aes(label = Label), position = position_stack(vjust = 0.5),
+              size = 3.2, colour = "white", lineheight = 0.95) +
+    scale_fill_manual(values = STATUS_COLS, name = NULL, drop = FALSE) +
+    labs(title = sp, x = NULL, y = NULL) +
+    theme_void() +
+    theme(plot.title = element_text(hjust = 0.5, face = "italic", size = 11),
+          legend.text = element_text(size = 9))
+}
+
+one_pie("P. turneri") / one_pie("P. bifurca") +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom", legend.direction = "vertical")
+```

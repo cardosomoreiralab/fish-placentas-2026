@@ -44,3 +44,6 @@ ArchRLogs/
 
 # Small reference tables belong in the repo
 !data/reference/**/*.rds
+
+# Temp copies the render harness writes beside each .Rmd
+.render_*.Rmd

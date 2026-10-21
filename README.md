@@ -9,53 +9,62 @@ without a placenta, to ask which cell types form the placenta in different
 origins, how these cell types are specified, and what molecular changes they
 undergo to enable nutrient transfer.
 
-## What is here
+## In this repository
 
-Code to reproduce the figures in the paper. The data processing steps are
-described in the Methods; these scripts start from the processed objects and
-reference files, which are deposited (see Data availability).
+Code for the figure panels that can be rebuilt from the deposited data. Panels
+that are microscopy, or whose analysis is described in the Methods rather than
+driven by a script, are not reproduced.
 
-* [`figures/code_fig1.Rmd`](figures/code_fig1.Rmd) — (B) *P. prolifica* and
-  *P. turneri* UMAPs; (C) the correlation heatmap between them; (E) the SAMap
-  cell-type tree for the five placental species.
-* [`figures/code_fig2.Rmd`](figures/code_fig2.Rmd) — (B) SAMap correlation heatmap
-  for all nine poeciliids plus zebrafish and killifish; (D) cell-type
-  proportions in the *P. turneri* and *P. gracilis* atlases, by sample status
-  (pregnant, non-pregnant, juvenile).
-* [`figures/code_fig3.Rmd`](figures/code_fig3.Rmd) — (A) GO terms for markers of
-  the late follicle cell; (B) cell-type enrichment of vitellogenesis and
-  ovulation genes; (C) upset plot and pie chart of positively selected genes
-  highly expressed in the late follicle cell.
-* [`figures/code_fig4.Rmd`](figures/code_fig4.Rmd) — (B) TF motif enrichment and
-  activity across cell types; (C) SCENIC+ transcription-factor gene regulatory
-  networks.
-* [`figures/code_fig5.Rmd`](figures/code_fig5.Rmd) — (B) GO terms for
-  differentially expressed genes; (C) Venn diagrams of DEG overlap between the
-  placental species; (D) upset plot of genes involved in different processes
-  across species; (E) conservation of TF-DEG interactions.
-* [`figures/code_fig6.Rmd`](figures/code_fig6.Rmd) — (A) module-score enrichment of
-  genes of different evolutionary ages; (B) upset plot and pie charts of GO
-  terms for genes with parallel substitutions in the late follicle cell and the
-  yolk pericardial sac.
-Supplementary figures, in [`figures/supplementary/`](figures/supplementary):
+### Main text figures
 
-| | |
+| File | Panels |
 |---|---|
-| [`code_sf1.Rmd`](figures/supplementary/code_sf1.Rmd) | quality control for all nine atlases |
-| [`code_sf2.Rmd`](figures/supplementary/code_sf2.Rmd) | proportion of each snRNA-seq library per species |
-| [`code_sf3.Rmd`](figures/supplementary/code_sf3.Rmd) | cell-type-specific marker genes for ovarian cell types in *P. turneri* and *P. prolifica* |
-| [`code_sf4.Rmd`](figures/supplementary/code_sf4.Rmd) | dendrograms of 1 - SAMap score, and a tree from pseudobulks and GSI |
-| [`code_sf5.Rmd`](figures/supplementary/code_sf5.Rmd) | GO bar charts for genes under positive selection |
-| — | Supplementary 6 is imaging; no code |
-| [`code_sf7.Rmd`](figures/supplementary/code_sf7.Rmd) | (A) global TF activity heatmap; (B) granulosa/theca and late follicle/germinal epithelium TF patterns |
-| [`code_sf8.Rmd`](figures/supplementary/code_sf8.Rmd) | GO bar charts for late follicle cell DEGs |
-| [`code_sf9.Rmd`](figures/supplementary/code_sf9.Rmd) | sharing of DEGs between the placental species |
-| [`code_sf10.Rmd`](figures/supplementary/code_sf10.Rmd) | number of DEGs per cell type in the placental species |
-| [`code_sf11.Rmd`](figures/supplementary/code_sf11.Rmd) | enrichment of genes of different ages across ovarian cell types, in the four species pairs |
+| [`figures/code_fig1.Rmd`](figures/code_fig1.Rmd) | (B) *P. turneri* and *P. prolifica* UMAPs; (C) SAMap correlation between them; (E) SAMap cell-type tree for the five placental species |
+| [`figures/code_fig2.Rmd`](figures/code_fig2.Rmd) | (B) SAMap scores across the nine poeciliids; (D) *P. turneri* composition, adult against juvenile; (E) *P. gracilis* composition, pregnant against non-pregnant |
+| [`figures/code_fig3.Rmd`](figures/code_fig3.Rmd) | (B) vitellogenesis and ovulation gene-set activity per cell type. Panels (A) and (C) are not reproduced here. |
+| [`figures/code_fig4.Rmd`](figures/code_fig4.Rmd) | (B) TF motif activity across cell types; (C) consensus SCENIC+ regulatory networks |
+| [`figures/code_fig5.Rmd`](figures/code_fig5.Rmd) | (E) conservation of TF-DEG interactions, for *P. turneri* and *P. bifurca* compared to *P. gracilis* and *P. picta*. Panels (B), (C) and (D) are not reproduced here. |
+
+### Supplementary figures
+
+| File | Panels |
+|---|---|
+| [`figures/supplementary/code_sf4.Rmd`](figures/supplementary/code_sf4.Rmd) | (A) cell-type tree from SAMap profiles; (B) tree from pseudobulk expression with bootstrap support |
+| [`figures/supplementary/code_sf7.Rmd`](figures/supplementary/code_sf7.Rmd) | (A) global TF activity; (B) granulosa/theca and late follicle/germinal epithelium TF patterns |
 
 ## Reference data
 
-Inputs are in [`data/`](data).
+Small reference tables are committed here and need no download:
+
+```
+data/reference/
+|-- atac/
+|   |-- Orthology/     one-to-one orthologue maps against turneri
+|   |-- TF_lists/      the transcription factors scored per species
+|   |-- TF_activity/   per-species TF motif activity by cell type
+|   `-- cell_type_specific_eRegulons/
+|                      SCENIC+ eRegulons for the late follicle cell, gzipped
+|-- rna/
+|   |-- Orthology/     the OrthoFinder/POSSVM orthology table
+|   |-- SAMap/         pairwise SAMap mapping scores
+|   |-- GO/            per-species gene-to-GO maps
+|   `-- DEGs/          differential expression: one table per placental lineage
+|                      against its sister, the same split by cell type, and
+|                      topGO summaries of the up-regulated genes
+`-- supplementary_tables/   orthology, positively selected genes, parallel substitutions
+```
+
+Everything large is deposited at ArrayExpress. Each script opens with the
+accessions, the folder layout it expects and the two renames the deposited
+archives require.
+
+## Running the figures
+
+Each file is a standalone R Markdown document. Set `DATA_DIR` at the top to
+wherever you unpacked the deposited data and knit; `REF_DIR` already points at
+`data/reference/` in this repository. Every panel is printed into the rendered
+document rather than written to disk, and each chunk states which panel it
+produces.
 
 ## Data availability
 
@@ -63,8 +72,8 @@ Inputs are in [`data/`](data).
 * Single-nucleus ATAC-seq: ArrayExpress [`E-MTAB-17776`](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-17776)
 * Genome assemblies: ENA [`PRJEB115767`](https://www.ebi.ac.uk/ena/browser/view/PRJEB115767)
 * Annotated Seurat objects for all eleven atlases, the ArchR projects and the
-  SCENIC+ outputs are deposited alongside the raw data; cell-type names follow
-  the single vocabulary described in [`snRNA-seq/cell_types.md`](snRNA-seq/cell_types.md).
+  SCENIC+ outputs are deposited alongside the raw data. Every atlas carries a
+  `cell_type` column.
 
 ## Data exploration
 
@@ -83,8 +92,10 @@ placentation in fish. *[Journal]*. [DOI]
 
 ## Contact
 
-Sophie Kraunsoe
-(sophie.kraunsoe@crick.ac.uk), Diego Safian (diego.safian@crick.ac.uk) and Margarida Cardoso-Moreira
-(margarida.cardosomoreira@crick.ac.uk), Evolutionary Developmental Biology
-Laboratory, The Francis Crick Institute, London, UK.
+Sophie Kraunsoe (sophie.kraunsoe@crick.ac.uk)
+Diego Safian (diego.safian@crick.ac.uk)
+Margarida Cardoso-Moreira (margarida.cardosomoreira@crick.ac.uk)
+
+Evolutionary Developmental Biology Laboratory, The Francis Crick Institute,
+London, UK.
 

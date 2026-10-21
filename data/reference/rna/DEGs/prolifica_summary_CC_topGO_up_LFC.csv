@@ -1,0 +1,201 @@
+GO.ID,Term,Annotated,Significant,Expected,weightFisher,p.adj
+GO:0016020,membrane,8202,317,280.89,0.0017,0.0048765
+GO:0005844,polysome,57,5,1.95,0.0023,1
+GO:0034704,calcium channel complex,62,5,2.12,0.0024,1
+GO:0000308,cytoplasmic cyclin-dependent protein kin...,3,2,0.1,0.0037,1
+GO:0043034,costamere,20,4,0.68,0.0043,1
+GO:1990234,transferase complex,859,39,29.42,0.0044,1
+GO:0000139,Golgi membrane,582,34,19.93,0.0054,1
+GO:0035061,interchromatin granule,5,2,0.17,0.0063,1
+GO:0071664,catenin-TCF7L2 complex,5,2,0.17,0.0065,1
+GO:0005938,cell cortex,350,22,11.99,0.0067,1
+GO:0098993,anchored component of synaptic vesicle m...,19,4,0.65,0.0072,1
+GO:0048471,perinuclear region of cytoplasm,687,36,23.53,0.008,1
+GO:0090575,RNA polymerase II transcription regulato...,198,12,6.78,0.0091,1
+GO:0031300,intrinsic component of organelle membran...,388,24,13.29,0.0102,1
+GO:0043005,neuron projection,1505,68,51.54,0.0111,1
+GO:0099503,secretory vesicle,619,33,21.2,0.0115,1
+GO:0030175,filopodium,134,10,4.59,0.0122,1
+GO:0030018,Z disc,128,10,4.38,0.0129,1
+GO:0031224,intrinsic component of membrane,4825,190,165.24,0.0141,1
+GO:0016605,PML body,109,7,3.73,0.0155,1
+GO:0036464,cytoplasmic ribonucleoprotein granule,227,15,7.77,0.0155,1
+GO:0032432,actin filament bundle,95,8,3.25,0.0164,1
+GO:0045178,basal part of cell,282,17,9.66,0.0181,1
+GO:0044322,endoplasmic reticulum quality control co...,17,3,0.58,0.0191,1
+GO:0035770,ribonucleoprotein granule,241,15,8.25,0.0192,1
+GO:0061700,GATOR2 complex,7,2,0.24,0.0201,1
+GO:0031674,I band,139,10,4.76,0.0217,1
+GO:0042641,actomyosin,100,8,3.42,0.0217,1
+GO:0005667,transcription regulator complex,430,22,14.73,0.0227,1
+GO:0030133,transport vesicle,391,22,13.39,0.0234,1
+GO:0043292,contractile fiber,242,15,8.29,0.0243,1
+GO:0071944,cell periphery,5264,203,180.27,0.025,1
+GO:0005849,mRNA cleavage factor complex,25,3,0.86,0.0262,1
+GO:0071920,cleavage body,1,1,0.03,0.0265,1
+GO:0098588,bounding membrane of organelle,1859,80,63.66,0.0278,1
+GO:0005796,Golgi lumen,37,4,1.27,0.0281,1
+GO:0005726,perichromatin fibrils,8,2,0.27,0.0287,1
+GO:1990246,uniplex complex,7,2,0.24,0.0291,1
+GO:0098552,side of membrane,587,29,20.1,0.0322,1
+GO:0032996,Bcl3-Bcl10 complex,1,1,0.03,0.0341,1
+GO:0061845,neuron projection branch point,1,1,0.03,0.0343,1
+GO:0099091,"postsynaptic specialization, intracellul...",36,4,1.23,0.0347,1
+GO:0061202,clathrin-sculpted gamma-aminobutyric aci...,5,2,0.17,0.0349,1
+GO:0030130,clathrin coat of trans-Golgi network ves...,18,3,0.62,0.0349,1
+GO:0098794,postsynapse,768,36,26.3,0.0367,1
+GO:0031984,organelle subcompartment,1361,59,46.61,0.0374,1
+GO:0032144,4-aminobutyrate transaminase complex,1,1,0.03,0.0376,1
+GO:0005773,vacuole,676,32,23.15,0.0382,1
+GO:0031527,filopodium membrane,21,3,0.72,0.0387,1
+GO:0045177,apical part of cell,451,23,15.45,0.039,1
+GO:0035866,alphav-beta3 integrin-PKCalpha complex,1,1,0.03,0.0391,1
+GO:0035868,alphav-beta3 integrin-HMGB1 complex,1,1,0.03,0.0391,1
+GO:0043197,dendritic spine,244,17,8.36,0.0393,1
+GO:0031304,intrinsic component of mitochondrial inn...,50,4,1.71,0.0394,1
+GO:0005899,insulin receptor complex,8,2,0.27,0.0394,1
+GO:0099092,"postsynaptic density, intracellular comp...",28,4,0.96,0.0405,1
+GO:0099524,postsynaptic cytosol,17,3,0.58,0.0405,1
+GO:0031463,Cul3-RING ubiquitin ligase complex,56,5,1.92,0.0413,1
+GO:0060198,clathrin-sculpted vesicle,7,2,0.24,0.0416,1
+GO:0005834,heterotrimeric G-protein complex,38,4,1.3,0.0434,1
+GO:0044306,neuron projection terminus,178,11,6.1,0.0436,1
+GO:0044309,neuron spine,249,17,8.53,0.0448,1
+GO:1902737,dendritic filopodium,8,2,0.27,0.0456,1
+GO:0150034,distal axon,388,20,13.29,0.0472,1
+GO:0061773,eNoSc complex,2,1,0.07,0.0482,1
+GO:0098590,plasma membrane region,1312,62,44.93,0.0485,1
+GO:0030017,sarcomere,205,12,7.02,0.051,1
+GO:0043198,dendritic shaft,59,5,2.02,0.0516,1
+GO:0045240,dihydrolipoyl dehydrogenase complex,11,2,0.38,0.0517,1
+GO:0030054,cell junction,2225,90,76.2,0.0536,1
+GO:0099522,cytosolic region,23,3,0.79,0.0541,1
+GO:1905360,GTPase complex,43,4,1.47,0.0546,1
+GO:0031594,neuromuscular junction,98,8,3.36,0.0556,1
+GO:0070369,beta-catenin-TCF7L2 complex,4,2,0.14,0.0571,1
+GO:0005758,mitochondrial intermembrane space,94,6,3.22,0.0593,1
+GO:0005833,hemoglobin complex,12,2,0.41,0.0595,1
+GO:0009514,glyoxysome,1,1,0.03,0.0596,1
+GO:0005794,Golgi apparatus,1442,60,49.38,0.0606,1
+GO:0032444,activin responsive factor complex,1,1,0.03,0.0606,1
+GO:1990425,ryanodine receptor complex,2,1,0.07,0.0617,1
+GO:0071782,endoplasmic reticulum tubular network,23,3,0.79,0.0641,1
+GO:0071817,MMXD complex,2,1,0.07,0.0645,1
+GO:0032588,trans-Golgi network membrane,59,5,2.02,0.0645,1
+GO:0035859,Seh1-associated complex,13,2,0.45,0.0657,1
+GO:0061846,dendritic spine cytoplasm,1,1,0.03,0.0659,1
+GO:0042788,polysomal ribosome,21,2,0.72,0.0662,1
+GO:0090636,outer dense plaque of desmosome,2,1,0.07,0.0675,1
+GO:0090637,inner dense plaque of desmosome,2,1,0.07,0.0675,1
+GO:0033150,cytoskeletal calyx,2,1,0.07,0.0675,1
+GO:0070826,paraferritin complex,2,1,0.07,0.068,1
+GO:0043529,GET complex,2,1,0.07,0.0692,1
+GO:0098830,presynaptic endosome,2,1,0.07,0.0712,1
+GO:0042579,microbody,151,9,5.17,0.0738,1
+GO:1904724,tertiary granule lumen,16,2,0.55,0.0742,1
+GO:0035985,senescence-associated heterochromatin fo...,2,1,0.07,0.075,1
+GO:0099572,postsynaptic specialization,451,21,15.45,0.075,1
+GO:0071141,SMAD protein complex,14,2,0.48,0.075,1
+GO:0016328,lateral plasma membrane,66,5,2.26,0.0761,1
+GO:0043190,ATP-binding cassette (ABC) transporter c...,2,1,0.07,0.0765,1
+GO:0071133,alpha9-beta1 integrin-ADAM8 complex,2,1,0.07,0.0768,1
+GO:0070516,CAK-ERCC2 complex,3,1,0.1,0.0774,1
+GO:0099631,postsynaptic endocytic zone cytoplasmic ...,2,1,0.07,0.0776,1
+GO:0031970,organelle envelope lumen,105,6,3.6,0.0784,1
+GO:0033011,perinuclear theca,2,1,0.07,0.0796,1
+GO:0031982,vesicle,2473,92,84.69,0.0809,1
+GO:0000124,SAGA complex,18,2,0.62,0.0825,1
+GO:0005856,cytoskeleton,2219,86,75.99,0.0831,1
+GO:0061617,MICOS complex,14,2,0.48,0.0844,1
+GO:0032541,cortical endoplasmic reticulum,8,2,0.27,0.0848,1
+GO:0012510,trans-Golgi network transport vesicle me...,21,3,0.72,0.086,1
+GO:0032419,extrinsic component of lysosome membrane,2,1,0.07,0.0863,1
+GO:0031588,nucleotide-activated protein kinase comp...,14,2,0.48,0.0871,1
+GO:0098842,postsynaptic early endosome,3,1,0.1,0.0876,1
+GO:0030140,trans-Golgi network transport vesicle,36,4,1.23,0.0882,1
+GO:0008021,synaptic vesicle,229,14,7.84,0.0905,1
+GO:0005829,cytosol,3963,150,135.72,0.0924,1
+GO:0034683,integrin alphav-beta3 complex,1,1,0.03,0.0937,1
+GO:0034684,integrin alphav-beta5 complex,1,1,0.03,0.0937,1
+GO:1990429,peroxisomal importomer complex,3,1,0.1,0.0949,1
+GO:0120199,cone photoreceptor outer segment,3,1,0.1,0.0978,1
+GO:0033256,I-kappaB/NF-kappaB complex,3,1,0.1,0.0991,1
+GO:0002178,palmitoyltransferase complex,12,2,0.41,0.0995,1
+GO:0099501,exocytic vesicle membrane,125,10,4.28,0.1007,1
+GO:0060201,clathrin-sculpted acetylcholine transpor...,2,1,0.07,0.1011,1
+GO:0062023,collagen-containing extracellular matrix,342,12,11.71,0.1013,1
+GO:0098965,extracellular matrix of synaptic cleft,3,1,0.1,0.1019,1
+GO:0045172,germline ring canal,2,1,0.07,0.1052,1
+GO:0032580,Golgi cisterna membrane,68,5,2.33,0.107,1
+GO:0045335,phagocytic vesicle,108,7,3.7,0.1085,1
+GO:0048269,methionine adenosyltransferase complex,3,1,0.1,0.1087,1
+GO:0035098,ESC/E(Z) complex,21,2,0.72,0.1088,1
+GO:0031228,intrinsic component of Golgi membrane,58,6,1.99,0.109,1
+GO:0032937,SREBP-SCAP-Insig complex,3,1,0.1,0.1095,1
+GO:0031258,lamellipodium membrane,18,2,0.62,0.1125,1
+GO:0005775,vacuolar lumen,60,4,2.05,0.113,1
+GO:0030141,secretory granule,415,20,14.21,0.1132,1
+GO:0060200,clathrin-sculpted acetylcholine transpor...,2,1,0.07,0.1138,1
+GO:0098685,Schaffer collateral - CA1 synapse,96,7,3.29,0.115,1
+GO:1902911,protein kinase complex,146,9,5,0.1154,1
+GO:0097708,intracellular vesicle,2078,78,71.16,0.1154,1
+GO:0009898,cytoplasmic side of plasma membrane,211,12,7.23,0.1197,1
+GO:0030173,integral component of Golgi membrane,51,5,1.75,0.1201,1
+GO:0005737,cytoplasm,11542,410,395.27,0.1204,1
+GO:0030660,Golgi-associated vesicle membrane,46,4,1.58,0.122,1
+GO:0098559,cytoplasmic side of early endosome membr...,5,1,0.17,0.1224,1
+GO:0008305,integrin complex,32,3,1.1,0.1241,1
+GO:0032153,cell division site,99,6,3.39,0.1253,1
+GO:0042382,paraspeckles,5,1,0.17,0.1259,1
+GO:0031094,platelet dense tubular network,4,1,0.14,0.1267,1
+GO:0048770,pigment granule,113,7,3.87,0.1282,1
+GO:0035748,myelin sheath abaxonal region,4,1,0.14,0.1305,1
+GO:0120043,stereocilium shaft,4,1,0.14,0.1305,1
+GO:0030665,clathrin-coated vesicle membrane,89,6,3.05,0.1313,1
+GO:0042995,cell projection,2422,93,82.94,0.1316,1
+GO:0071144,heteromeric SMAD protein complex,11,2,0.38,0.1353,1
+GO:0044297,cell body,681,29,23.32,0.1372,1
+GO:0090665,glycoprotein complex,20,2,0.68,0.1381,1
+GO:0031301,integral component of organelle membrane,348,18,11.92,0.1401,1
+GO:0098791,Golgi apparatus subcompartment,341,18,11.68,0.1407,1
+GO:0036186,early phagosome membrane,2,1,0.07,0.1414,1
+GO:0045239,tricarboxylic acid cycle enzyme complex,19,2,0.65,0.1422,1
+GO:0036477,somatodendritic compartment,979,40,33.53,0.1446,1
+GO:0033553,rDNA heterochromatin,4,1,0.14,0.1461,1
+GO:0060203,clathrin-sculpted glutamate transport ve...,3,1,0.1,0.148,1
+GO:0070083,clathrin-sculpted monoamine transport ve...,3,1,0.1,0.148,1
+GO:0098793,presynapse,582,25,19.93,0.1484,1
+GO:0031519,PcG protein complex,51,3,1.75,0.1492,1
+GO:0071010,prespliceosome,15,1,0.51,0.1505,1
+GO:0030672,synaptic vesicle membrane,125,10,4.28,0.1516,1
+GO:0031225,anchored component of membrane,154,9,5.27,0.1519,1
+GO:0070765,gamma-secretase complex,5,1,0.17,0.1538,1
+GO:0030658,transport vesicle membrane,203,12,6.95,0.1558,1
+GO:0005637,nuclear inner membrane,57,3,1.95,0.1559,1
+GO:0000306,extrinsic component of vacuolar membrane,4,1,0.14,0.1602,1
+GO:0043203,axon hillock,5,1,0.17,0.1603,1
+GO:0032587,ruffle membrane,92,5,3.15,0.1605,1
+GO:0043291,RAVE complex,5,1,0.17,0.1614,1
+GO:0060199,clathrin-sculpted glutamate transport ve...,3,1,0.1,0.1659,1
+GO:0070081,clathrin-sculpted monoamine transport ve...,3,1,0.1,0.1659,1
+GO:0032156,septin cytoskeleton,19,2,0.65,0.1662,1
+GO:0036409,histone H3-K14 acetyltransferase complex,2,1,0.07,0.1667,1
+GO:0016010,dystrophin-associated glycoprotein compl...,19,2,0.65,0.1671,1
+GO:0071004,U2-type prespliceosome,15,1,0.51,0.1685,1
+GO:0034451,centriolar satellite,63,4,2.16,0.1704,1
+GO:1990578,perinuclear endoplasmic reticulum membra...,5,1,0.17,0.1724,1
+GO:0031090,organelle membrane,3332,124,114.11,0.1733,1
+GO:0031907,microbody lumen,26,2,0.89,0.1768,1
+GO:0005783,endoplasmic reticulum,1756,67,60.14,0.1773,1
+GO:0042101,T cell receptor complex,19,2,0.65,0.1787,1
+GO:0060076,excitatory synapse,70,5,2.4,0.1809,1
+GO:0036195,muscle cell projection membrane,6,1,0.21,0.1813,1
+GO:0034685,integrin alphav-beta6 complex,2,1,0.07,0.1815,1
+GO:0034686,integrin alphav-beta8 complex,2,1,0.07,0.1815,1
+GO:0015629,actin cytoskeleton,517,24,17.71,0.1826,1
+GO:0065010,extracellular membrane-bounded organelle,549,22,18.8,0.1827,1
+GO:0031903,microbody membrane,70,5,2.4,0.1857,1
+GO:0045283,fumarate reductase complex,6,1,0.21,0.187,1
+GO:0045273,respiratory chain complex II,6,1,0.21,0.187,1
+GO:0045281,succinate dehydrogenase complex,6,1,0.21,0.189,1
+GO:0098843,postsynaptic endocytic zone,6,1,0.21,0.1892,1

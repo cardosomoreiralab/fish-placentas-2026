@@ -1,0 +1,242 @@
+---
+title: "Figure 1"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
+---
+
+# Figure 1
+
+## Getting the data
+
+Processed data are deposited at ArrayExpress, genome assemblies at ENA:
+
+| Data | Accession |
+|---|---|
+| Single-nucleus RNA-seq | `E-MTAB-17757` |
+| Single-nucleus ATAC-seq | `E-MTAB-17776` |
+| Genome assemblies | `PRJEB115767` |
+
+Small reference tables are committed in this repository under `data/reference/`
+and need no download: orthology maps, TF lists, SAMap scores, gene-to-GO maps,
+TF activity, and the differential expression tables.
+
+Download the processed objects from the two ArrayExpress accessions into one
+master folder. Every script reads from exactly two places: `DATA_DIR` (what you
+downloaded) and `REF_DIR` (this repository).
+
+```
+<DATA_DIR>/
+|-- snRNA/                                   E-MTAB-17757
+|   `-- seurat/
+|       |-- bifurca_atlas.rds
+|       |-- brachi_atlas.rds
+|       |-- formosa_atlas.rds
+|       |-- gracilis_atlas.rds
+|       |-- gracilis_atlas_pregnant.rds    pregnant samples only
+|       |-- infans_atlas.rds
+|       |-- phallo_atlas.rds
+|       |-- picta_atlas.rds
+|       |-- prolifica_atlas.rds
+|       |-- turneri_atlas.rds
+|       `-- turneri_atlas_pregnant.rds     pregnant samples only
+`-- snATAC/                                  E-MTAB-17776
+    |-- archr/
+    |   `-- <species>/
+    |       |-- ArrowFiles/<Species>_ovary_<library>.arrow
+    |       `-- Save-ArchR-Project.rds
+    `-- scenicplus/
+        `-- <species>/
+            |-- eRegulon_<cell type>.csv
+            `-- raw_TF_gene_pairs.tsv
+```
+
+**Naming conventions.** `<species>` is always the lower-case short name:
+`bifurca`, `brachi`, `formosa`, `gracilis`, `infans`, `phallo`, `picta`,
+`prolifica`, `turneri`. Two renames are needed after download, because the
+deposited archives are flat:
+
+- Seurat objects are deposited under their analysis names
+  (`bifurca_harmony_annotated.rds`, `TurneriAtlas_pregnant_non_pregnant_juvenile.rds`,
+  and so on). Rename each to `<species>_atlas.rds`. *P. gracilis* and
+  *P. turneri* also have a pregnant-only atlas; name those
+  `<species>_atlas_pregnant.rds`. Panels use the combined atlas unless
+  stated otherwise - Figure 1B uses the pregnant-only *P. turneri* atlas.
+- ArchR project objects are deposited as `<species>_Save-ArchR-Project.rds`.
+  Drop the prefix so each becomes `Save-ArchR-Project.rds` inside its own
+  `<species>/` folder, with that species' arrow files in `ArrowFiles/` beside it.
+  `loadArchRProject()` re-points the arrow paths itself on first load. On a
+  network filesystem set `Sys.setenv(HDF5_USE_FILE_LOCKING = "FALSE")` first.
+
+Every atlas carries a `cell_type` column in `meta.data` using one vocabulary
+across all nine species. The scripts below use that column rather than the
+per-species cluster numbers, so the same code runs for every species.
+
+## Panels in this file
+
+| Panel | Chunk | Status |
+|---|---|---|
+| 1B | `fig1b` | *P. prolifica* and *P. turneri* UMAPs |
+| 1C | `fig1c` | SAMap correlation, *P. prolifica* vs *P. turneri* |
+| 1E | `fig1e` | SAMap cell-type tree, five placental species |
+
+```{r knitr-setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 300)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+## PURPOSE : Set the two paths every chunk below reads from, and load packages.
+## PRODUCES: DATA_DIR, REF_DIR
+## QUESTION: none - configuration only.
+
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"   # master folder described above
+REF_DIR  <- "../data/reference"             # reference tables, committed in this repo
+
+stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
+
+suppressPackageStartupMessages({
+  library(viridis)
+  library(pheatmap)
+  library(dendextend)
+  library(Seurat)
+  library(ggplot2)
+  library(patchwork)
+})
+```
+
+```{r fig1b, fig.width = 12, fig.height = 6}
+## PURPOSE : Figure 1B - UMAP of each atlas, coloured by the paper's cell types.
+## PRODUCES: the two UMAPs side by side with a shared legend
+## QUESTION: which cell types make up the ovary of each placental species, and
+##           is the late follicle cell a discrete population in both?
+
+## P. turneri is shown with its pregnant samples only; P. prolifica has a
+## single atlas. The combined turneri atlas is used elsewhere in the paper.
+ATLAS <- c(turneri   = "turneri_atlas_pregnant.rds",
+           prolifica = "prolifica_atlas.rds")
+
+## An atlas may carry more than one UMAP. The integrated embedding is the one
+## the paper shows, so an "unintegrated" reduction is only used as a fallback -
+## picking it by accident is what makes these panels disagree with the figure.
+pick_reduction <- function(obj, sp) {
+  r <- Reductions(obj)
+  message(sp, " reductions: ", paste(r, collapse = ", "))
+  umaps <- grep("umap", r, value = TRUE, ignore.case = TRUE)
+  if (!length(umaps)) stop(sp, ": no UMAP reduction. Available: ",
+                           paste(r, collapse = ", "))
+  keep <- umaps[!grepl("unintegrated", umaps, ignore.case = TRUE)]
+  out  <- if (length(keep)) keep[1] else umaps[1]
+  message(sp, " using reduction: ", out)
+  out
+}
+
+objs <- lapply(setNames(names(ATLAS), names(ATLAS)), function(sp)
+  readRDS(file.path(DATA_DIR, "snRNA", "seurat", ATLAS[[sp]])))
+
+## one colour per cell type across both panels, so a type reads the same in each
+all_types <- sort(unique(unlist(lapply(objs, function(o) as.character(o$cell_type)))))
+PAL <- setNames(scales::hue_pal()(length(all_types)), all_types)
+
+umap_panel <- function(sp, label) {
+  obj <- objs[[sp]]
+  DimPlot(obj, group.by = "cell_type", reduction = pick_reduction(obj, sp),
+          cols = PAL, label = FALSE, raster = FALSE) +
+    coord_fixed() +
+    ggtitle(label) +
+    labs(x = "UMAP-1", y = "UMAP-2") +
+    theme(plot.title = element_text(face = "italic", hjust = 0.5))
+}
+
+(umap_panel("turneri", "P. turneri") | umap_panel("prolifica", "P. prolifica")) +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom", legend.text = element_text(size = 8))
+```
+
+
+```{r samap-matrix}
+## PURPOSE : Read the pairwise SAMap mapping scores for all nine poeciliids.
+## PRODUCES: mat - a cluster x cluster matrix of SAMap scores
+## QUESTION: how transcriptionally similar is each cell cluster to each cluster
+##           in every other species?
+
+mat <- as.matrix(read.csv(
+  file.path(REF_DIR, "rna", "SAMap", "MappingValues_Pairwise_samap.txt"),
+  row.names = 1))
+
+## The matrix is labelled <two-letter species>_<cluster number>. The cleaned
+## atlases no longer carry that clustering, so the cluster -> cell type key is
+## committed alongside the matrix; see its `source` column for how each was set.
+CLUSTER_KEY <- read.csv(file.path(REF_DIR, "rna", "SAMap", "cluster_cell_types.csv"))
+cell_type_of <- setNames(CLUSTER_KEY$cell_type, CLUSTER_KEY$label)
+
+## a species may have more than one cluster of a type, so the cluster is kept
+## in the label to keep rows distinguishable and traceable to the matrix
+pretty_label <- function(x) ifelse(is.na(cell_type_of[x]), x,
+                                   sprintf("%s (%s)", cell_type_of[x], x))
+
+dim(mat)
+```
+
+```{r fig1c, fig.width = 7, fig.height = 6}
+## PURPOSE : Figure 1C - correlate the P. prolifica and P. turneri clusters
+##           through their shared SAMap profiles against all other species.
+## PRODUCES: the heatmap, printed in the document
+## QUESTION: do two species that evolved placentation independently build their
+##           ovaries from matching cell types?
+
+turneri_clusters   <- c("tu_10","tu_3","tu_8","tu_0","tu_1","tu_11","tu_12",
+                        "tu_16","tu_2","tu_20","tu_4")
+prolifica_clusters <- c("pr_3","pr_17","pr_6","pr_2","pr_4","pr_10","pr_9",
+                        "pr_11","pr_12","pr_16","pr_5","pr_13")
+
+## zebrafish columns are the outgroup used to build the scores, not a comparison
+tu_mat <- mat[turneri_clusters,   !grepl("^ze_", colnames(mat))]
+pr_mat <- mat[prolifica_clusters, !grepl("^ze_", colnames(mat))]
+
+cor_mat <- cor(t(pr_mat), t(tu_mat), use = "pairwise.complete.obs")
+
+rownames(cor_mat) <- pretty_label(rownames(cor_mat))
+colnames(cor_mat) <- pretty_label(colnames(cor_mat))
+
+pheatmap(cor_mat,
+         color                    = viridis(100),
+         cluster_rows             = FALSE,   # order is biological, set above
+         cluster_cols             = FALSE,
+         main                     = "P. prolifica vs P. turneri",
+         angle_col                = 45,
+         fontsize = 8, fontsize_row = 8, fontsize_col = 6,
+         border_color             = NA)
+```
+
+```{r fig1e, fig.width = 9, fig.height = 6}
+## PURPOSE : Figure 1E - cluster the five placental species' cell types on
+##           1 - Pearson correlation of their SAMap profiles.
+## PRODUCES: the dendrogram, printed in the document
+## QUESTION: do cell types group by cell type across species, or by species?
+
+placental_clusters <- c(
+  "bi_0","bi_2","bi_3","bi_4","bi_6","bi_7","bi_8","bi_12","bi_19",
+  "pr_1","pr_3","pr_5","pr_6","pr_8","pr_9","pr_10","pr_12","pr_17",
+  "tu_1","tu_2","tu_3","tu_4","tu_5","tu_7","tu_9","tu_10","tu_11","tu_12",
+  "fo_0","fo_1","fo_2","fo_5","fo_6","fo_7","fo_8","fo_9","fo_11",
+  "ph_0","ph_1","ph_3","ph_4","ph_7","ph_8","ph_10","ph_15")
+
+## subset in the matrix's own order, as Diego's script does - taking them in
+## the order of the list above would change how ties are broken in the tree
+keep <- rownames(mat)[rownames(mat) %in% placental_clusters]
+m    <- mat[keep, keep]
+
+rownames(m) <- colnames(m) <- pretty_label(rownames(m))
+
+d    <- as.dist(1 - cor(t(m), method = "pearson"))
+dend <- as.dendrogram(hclust(d, method = "average")) |>
+  color_branches(k = 10) |>
+  set("labels_cex", 0.7) |>
+  set("labels_col", "black")
+
+plot(dend, main = "SAMap cell-type tree, placental species (1 - Pearson)")
+```

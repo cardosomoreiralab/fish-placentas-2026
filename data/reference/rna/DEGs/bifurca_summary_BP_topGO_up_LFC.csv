@@ -1,0 +1,201 @@
+GO.ID,Term,Annotated,Significant,Expected,weightFisher,p.adj
+GO:0006629,lipid metabolic process,1085,76,46.2,9.9e-07,0.01452726
+GO:0044255,cellular lipid metabolic process,782,53,33.3,3.4e-05,0.249458
+GO:0098696,regulation of neurotransmitter receptor ...,14,5,0.6,0.00021,1
+GO:0009268,response to pH,24,6,1.02,0.00062,1
+GO:0046888,negative regulation of hormone secretion,54,9,2.3,0.00086,1
+GO:0008610,lipid biosynthetic process,534,38,22.74,0.00093,1
+GO:1990680,response to melanocyte-stimulating hormo...,5,3,0.21,0.00114,1
+GO:0009743,response to carbohydrate,176,19,7.49,0.00127,1
+GO:0019058,viral life cycle,196,18,8.35,0.00166,1
+GO:0035725,sodium ion transmembrane transport,108,12,4.6,0.00181,1
+GO:0060341,regulation of cellular localization,726,46,30.91,0.00197,1
+GO:0061179,negative regulation of insulin secretion...,12,4,0.51,0.00228,1
+GO:0030162,regulation of proteolysis,481,34,20.48,0.00229,1
+GO:0051604,protein maturation,223,18,9.5,0.00265,1
+GO:1901615,organic hydroxy compound metabolic proce...,430,30,18.31,0.00289,1
+GO:1902683,regulation of receptor localization to s...,20,5,0.85,0.00292,1
+GO:0120192,tight junction assembly,67,9,2.85,0.00301,1
+GO:0043405,regulation of MAP kinase activity,119,7,5.07,0.00316,1
+GO:0002792,negative regulation of peptide secretion,52,9,2.21,0.00319,1
+GO:2000097,regulation of smooth muscle cell-matrix ...,6,2,0.26,0.00336,1
+GO:0045017,glycerolipid biosynthetic process,192,16,8.18,0.00341,1
+GO:0042221,response to chemical,2925,157,124.55,0.00344,1
+GO:0035936,testosterone secretion,2,2,0.09,0.00356,1
+GO:0008654,phospholipid biosynthetic process,208,17,8.86,0.00359,1
+GO:0044106,cellular amine metabolic process,79,8,3.36,0.00376,1
+GO:0090461,glutamate homeostasis,3,2,0.13,0.00385,1
+GO:0010817,regulation of hormone levels,379,27,16.14,0.00386,1
+GO:0071637,regulation of monocyte chemotactic prote...,7,3,0.3,0.00408,1
+GO:0071605,monocyte chemotactic protein-1 productio...,7,3,0.3,0.00408,1
+GO:2000843,regulation of testosterone secretion,2,2,0.09,0.00465,1
+GO:0016255,attachment of GPI anchor to protein,3,2,0.13,0.00535,1
+GO:0044272,sulfur compound biosynthetic process,101,10,4.3,0.00537,1
+GO:0090278,negative regulation of peptide hormone s...,49,9,2.09,0.00554,1
+GO:0006865,amino acid transport,122,13,5.19,0.00567,1
+GO:2000845,positive regulation of testosterone secr...,2,2,0.09,0.00582,1
+GO:0035773,insulin secretion involved in cellular r...,55,8,2.34,0.00601,1
+GO:0032098,regulation of appetite,18,4,0.77,0.00602,1
+GO:2001222,regulation of neuron migration,33,6,1.41,0.00618,1
+GO:0016053,organic acid biosynthetic process,220,17,9.37,0.00634,1
+GO:0046479,glycosphingolipid catabolic process,11,3,0.47,0.00665,1
+GO:0016043,cellular component organization,4913,199,209.2,0.00666,1
+GO:0071322,cellular response to carbohydrate stimul...,111,12,4.73,0.00674,1
+GO:0072131,kidney mesenchyme morphogenesis,3,2,0.13,0.00696,1
+GO:0015833,peptide transport,220,19,9.37,0.00702,1
+GO:1902473,regulation of protein localization to sy...,20,5,0.85,0.00720,1
+GO:0006793,phosphorus metabolic process,2144,101,91.29,0.00720,1
+GO:0021986,habenula development,9,3,0.38,0.00721,1
+GO:0007154,cell communication,4679,220,199.24,0.00729,1
+GO:0090087,regulation of peptide transport,154,15,6.56,0.00748,1
+GO:0019377,glycolipid catabolic process,11,3,0.47,0.00773,1
+GO:0018958,phenol-containing compound metabolic pro...,84,8,3.58,0.00789,1
+GO:0034329,cell junction assembly,341,23,14.52,0.00792,1
+GO:0007165,signal transduction,4242,201,180.63,0.00810,1
+GO:0007585,respiratory gaseous exchange by respirat...,38,6,1.62,0.00814,1
+GO:0048870,cell motility,1261,69,53.69,0.00856,1
+GO:0034654,nucleobase-containing compound biosynthe...,2659,97,113.22,0.00880,1
+GO:0072348,sulfur compound transport,51,7,2.17,0.00932,1
+GO:1903531,negative regulation of secretion by cell,112,11,4.77,0.00943,1
+GO:0033238,regulation of cellular amine metabolic p...,21,4,0.89,0.00949,1
+GO:0040011,locomotion,1040,60,44.28,0.00955,1
+GO:0007020,microtubule nucleation,33,4,1.41,0.00966,1
+GO:0033008,positive regulation of mast cell activat...,15,3,0.64,0.00970,1
+GO:0021538,epithalamus development,10,3,0.43,0.00994,1
+GO:0051145,smooth muscle cell differentiation,39,6,1.66,0.01035,1
+GO:0000271,polysaccharide biosynthetic process,70,7,2.98,0.01061,1
+GO:1903530,regulation of secretion by cell,429,28,18.27,0.01084,1
+GO:0065009,regulation of molecular function,2120,109,90.27,0.01100,1
+GO:1903829,positive regulation of protein localizat...,311,22,13.24,0.01109,1
+GO:0060563,neuroepithelial cell differentiation,14,3,0.6,0.01120,1
+GO:1901585,regulation of acid-sensing ion channel a...,4,2,0.17,0.01127,1
+GO:0010591,regulation of lamellipodium assembly,32,4,1.36,0.01132,1
+GO:2000060,positive regulation of ubiquitin-depende...,82,8,3.49,0.01137,1
+GO:0040013,negative regulation of locomotion,240,19,10.22,0.01144,1
+GO:0072076,nephrogenic mesenchyme development,3,2,0.13,0.01156,1
+GO:0055085,transmembrane transport,1162,64,49.48,0.01182,1
+GO:0032880,regulation of protein localization,664,43,28.27,0.01184,1
+GO:0051224,negative regulation of protein transport,117,11,4.98,0.01197,1
+GO:2000098,negative regulation of smooth muscle cel...,4,2,0.17,0.01210,1
+GO:0016553,base conversion or substitution editing,9,2,0.38,0.01222,1
+GO:0099633,protein localization to postsynaptic spe...,27,5,1.15,0.01237,1
+GO:0006407,rRNA export from nucleus,3,1,0.13,0.01240,1
+GO:1903034,regulation of response to wounding,136,12,5.79,0.01250,1
+GO:0006575,cellular modified amino acid metabolic p...,111,10,4.73,0.01251,1
+GO:0051223,regulation of protein transport,379,26,16.14,0.01338,1
+GO:0019184,nonribosomal peptide biosynthetic proces...,14,2,0.6,0.01365,1
+GO:0034976,response to endoplasmic reticulum stress,178,14,7.58,0.01375,1
+GO:0002639,positive regulation of immunoglobulin pr...,31,3,1.32,0.01415,1
+GO:0051048,negative regulation of secretion,120,12,5.11,0.01426,1
+GO:0050746,regulation of lipoprotein metabolic proc...,13,3,0.55,0.01435,1
+GO:0006790,sulfur compound metabolic process,249,17,10.6,0.01448,1
+GO:0033692,cellular polysaccharide biosynthetic pro...,63,6,2.68,0.01466,1
+GO:0055082,cellular chemical homeostasis,441,29,18.78,0.01467,1
+GO:0060415,muscle tissue morphogenesis,41,6,1.75,0.01498,1
+GO:1900077,negative regulation of cellular response...,34,5,1.45,0.01508,1
+GO:0006672,ceramide metabolic process,88,7,3.75,0.01538,1
+GO:1901741,positive regulation of myoblast fusion,13,3,0.55,0.01552,1
+GO:0046519,sphingoid metabolic process,21,5,0.89,0.01554,1
+GO:0032501,multicellular organismal process,5391,255,229.56,0.01565,1
+GO:1902414,protein localization to cell junction,83,9,3.53,0.01572,1
+GO:0002526,acute inflammatory response,82,7,3.49,0.01582,1
+GO:0051179,localization,4225,204,179.91,0.01598,1
+GO:1904950,negative regulation of establishment of ...,118,11,5.02,0.01608,1
+GO:0080144,amino acid homeostasis,4,2,0.17,0.01615,1
+GO:0089718,amino acid import across plasma membrane,30,5,1.28,0.01640,1
+GO:0034311,diol metabolic process,29,5,1.23,0.01652,1
+GO:0034394,protein localization to cell surface,44,6,1.87,0.01668,1
+GO:2000354,regulation of ovarian follicle developme...,5,2,0.21,0.01679,1
+GO:0140009,L-aspartate import across plasma membran...,2,2,0.09,0.01681,1
+GO:0090407,organophosphate biosynthetic process,455,27,19.37,0.01703,1
+GO:0033240,positive regulation of cellular amine me...,5,2,0.21,0.01712,1
+GO:0003009,skeletal muscle contraction,38,5,1.62,0.01740,1
+GO:0043649,dicarboxylic acid catabolic process,10,3,0.43,0.01763,1
+GO:2000758,positive regulation of peptidyl-lysine a...,24,3,1.02,0.01778,1
+GO:0061245,establishment or maintenance of bipolar ...,42,4,1.79,0.01788,1
+GO:0002703,regulation of leukocyte mediated immunit...,153,8,6.51,0.01816,1
+GO:0043302,positive regulation of leukocyte degranu...,18,3,0.77,0.01818,1
+GO:0042069,regulation of catecholamine metabolic pr...,14,3,0.6,0.01890,1
+GO:0021540,corpus callosum morphogenesis,3,2,0.13,0.01891,1
+GO:0015711,organic anion transport,253,20,10.77,0.01891,1
+GO:1904145,negative regulation of meiotic cell cycl...,1,1,0.04,0.01896,1
+GO:0015807,L-amino acid transport,57,7,2.43,0.01906,1
+GO:0044264,cellular polysaccharide metabolic proces...,84,7,3.58,0.01920,1
+GO:0098656,anion transmembrane transport,218,19,9.28,0.01929,1
+GO:0060588,negative regulation of lipoprotein lipid...,4,2,0.17,0.01941,1
+GO:1905653,positive regulation of artery morphogene...,5,2,0.21,0.01960,1
+GO:0071467,cellular response to pH,11,3,0.47,0.01990,1
+GO:1905050,positive regulation of metallopeptidase ...,11,3,0.47,0.02067,1
+GO:0099054,presynapse assembly,27,4,1.15,0.02095,1
+GO:0035886,vascular associated smooth muscle cell d...,19,4,0.81,0.02128,1
+GO:0016486,peptide hormone processing,9,2,0.38,0.02192,1
+GO:0009308,amine metabolic process,81,8,3.45,0.02192,1
+GO:0031652,positive regulation of heat generation,6,2,0.26,0.02219,1
+GO:0090657,telomeric loop disassembly,2,1,0.09,0.02222,1
+GO:0099072,regulation of postsynaptic membrane neur...,67,7,2.85,0.02241,1
+GO:1903036,positive regulation of response to wound...,68,7,2.9,0.02279,1
+GO:0061564,axon development,436,31,18.57,0.02303,1
+GO:0034330,cell junction organization,597,34,25.42,0.02308,1
+GO:0051014,actin filament severing,12,3,0.51,0.02319,1
+GO:0009188,ribonucleoside diphosphate biosynthetic ...,7,2,0.3,0.02330,1
+GO:0002673,regulation of acute inflammatory respons...,26,4,1.11,0.02343,1
+GO:1905426,positive regulation of Wnt-mediated midb...,1,1,0.04,0.02362,1
+GO:0046627,negative regulation of insulin receptor ...,34,5,1.45,0.02369,1
+GO:0048644,muscle organ morphogenesis,45,6,1.92,0.02370,1
+GO:0042160,lipoprotein modification,4,2,0.17,0.02385,1
+GO:0033555,multicellular organismal response to str...,50,6,2.13,0.02419,1
+GO:0031649,heat generation,12,3,0.51,0.02430,1
+GO:0060587,regulation of lipoprotein lipid oxidatio...,4,2,0.17,0.02433,1
+GO:0045923,positive regulation of fatty acid metabo...,26,4,1.11,0.02456,1
+GO:0032682,negative regulation of chemokine product...,16,3,0.68,0.02497,1
+GO:0015849,organic acid transport,232,18,9.88,0.02503,1
+GO:0050748,negative regulation of lipoprotein metab...,6,2,0.26,0.02514,1
+GO:0072109,glomerular mesangium development,9,2,0.38,0.02525,1
+GO:0006665,sphingolipid metabolic process,132,11,5.62,0.02526,1
+GO:1905737,positive regulation of L-proline import ...,1,1,0.04,0.02542,1
+GO:1903532,positive regulation of secretion by cell,205,15,8.73,0.02544,1
+GO:0050871,positive regulation of B cell activation,62,5,2.64,0.02561,1
+GO:0010592,positive regulation of lamellipodium ass...,21,3,0.89,0.02566,1
+GO:0009133,nucleoside diphosphate biosynthetic proc...,8,2,0.34,0.02619,1
+GO:0009070,serine family amino acid biosynthetic pr...,15,3,0.64,0.02654,1
+GO:0048843,negative regulation of axon extension in...,24,3,1.02,0.02660,1
+GO:0006508,proteolysis,1263,67,53.78,0.02701,1
+GO:0033059,cellular pigmentation,56,6,2.38,0.02707,1
+GO:0120193,tight junction organization,70,9,2.98,0.02712,1
+GO:0035567,non-canonical Wnt signaling pathway,45,6,1.92,0.02715,1
+GO:0031000,response to caffeine,12,3,0.51,0.02751,1
+GO:0032095,regulation of response to food,16,4,0.68,0.02756,1
+GO:0035519,protein K29-linked ubiquitination,1,1,0.04,0.02762,1
+GO:0140353,lipid export from cell,34,5,1.45,0.02782,1
+GO:0009605,response to external stimulus,1957,105,83.33,0.02815,1
+GO:0045933,positive regulation of muscle contractio...,27,4,1.15,0.02820,1
+GO:0044281,small molecule metabolic process,1378,69,58.68,0.02836,1
+GO:0009448,gamma-aminobutyric acid metabolic proces...,5,2,0.21,0.02836,1
+GO:0005976,polysaccharide metabolic process,94,8,4,0.02838,1
+GO:0018272,protein-pyridoxal-5-phosphate linkage vi...,1,1,0.04,0.02899,1
+GO:0046887,positive regulation of hormone secretion,99,9,4.22,0.02902,1
+GO:0008202,steroid metabolic process,226,15,9.62,0.02931,1
+GO:0010586,miRNA metabolic process,42,2,1.79,0.02934,1
+GO:0071638,negative regulation of monocyte chemotac...,6,3,0.26,0.02941,1
+GO:0000122,negative regulation of transcription by ...,564,28,24.02,0.02956,1
+GO:0035966,response to topologically incorrect prot...,114,10,4.85,0.03003,1
+GO:0035303,regulation of dephosphorylation,84,8,3.58,0.03018,1
+GO:0006612,protein targeting to membrane,98,10,4.17,0.03021,1
+GO:1902679,negative regulation of RNA biosynthetic ...,817,38,34.79,0.03050,1
+GO:0051046,regulation of secretion,468,30,19.93,0.03060,1
+GO:0002209,behavioral defense response,17,3,0.72,0.03076,1
+GO:0032879,regulation of localization,1545,81,65.79,0.03078,1
+GO:0051571,positive regulation of histone H3-K4 met...,18,3,0.77,0.03110,1
+GO:0044283,small molecule biosynthetic process,413,25,17.59,0.03129,1
+GO:0023052,signaling,4619,218,196.68,0.03185,1
+GO:0033005,positive regulation of mast cell activat...,21,3,0.89,0.03198,1
+GO:0006820,anion transport,383,28,16.31,0.03224,1
+GO:0062175,brexanolone catabolic process,2,1,0.09,0.03226,1
+GO:1905035,negative regulation of antifungal innate...,1,1,0.04,0.03226,1
+GO:0010042,response to manganese ion,14,3,0.6,0.03242,1
+GO:0032239,regulation of nucleobase-containing comp...,6,2,0.26,0.03258,1
+GO:0034032,purine nucleoside bisphosphate metabolic...,79,6,3.36,0.03286,1
+GO:1904628,cellular response to phorbol 13-acetate ...,1,1,0.04,0.03318,1
+GO:0090737,telomere maintenance via telomere trimmi...,3,1,0.13,0.03333,1
+GO:0008628,hormone-mediated apoptotic signaling pat...,1,1,0.04,0.03346,1
+GO:0070292,N-acylphosphatidylethanolamine metabolic...,7,2,0.3,0.03355,1

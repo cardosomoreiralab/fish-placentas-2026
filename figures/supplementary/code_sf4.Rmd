@@ -1,0 +1,291 @@
+---
+title: "Supplementary Figure 4"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
+---
+
+# Supplementary Figure 4
+
+## Getting the data
+
+Processed data are deposited at ArrayExpress, genome assemblies at ENA:
+
+| Data | Accession |
+|---|---|
+| Single-nucleus RNA-seq | `E-MTAB-17757` |
+| Single-nucleus ATAC-seq | `E-MTAB-17776` |
+| Genome assemblies | `PRJEB115767` |
+
+Small reference tables are committed in this repository under `data/reference/`
+and need no download: orthology maps, TF lists, SAMap scores, gene-to-GO maps,
+TF activity, and the differential expression tables.
+
+Download the processed objects from the two ArrayExpress accessions into one
+master folder. Every script reads from exactly two places: `DATA_DIR` (what you
+downloaded) and `REF_DIR` (this repository).
+
+```
+<DATA_DIR>/
+|-- snRNA/                                   E-MTAB-17757
+|   `-- seurat/
+|       |-- bifurca_atlas.rds
+|       |-- brachi_atlas.rds
+|       |-- formosa_atlas.rds
+|       |-- gracilis_atlas.rds
+|       |-- gracilis_atlas_pregnant.rds    pregnant samples only
+|       |-- infans_atlas.rds
+|       |-- phallo_atlas.rds
+|       |-- picta_atlas.rds
+|       |-- prolifica_atlas.rds
+|       |-- turneri_atlas.rds
+|       `-- turneri_atlas_pregnant.rds     pregnant samples only
+`-- snATAC/                                  E-MTAB-17776
+    |-- archr/
+    |   `-- <species>/
+    |       |-- ArrowFiles/<Species>_ovary_<library>.arrow
+    |       `-- Save-ArchR-Project.rds
+    `-- scenicplus/
+        `-- <species>/
+            |-- eRegulon_<cell type>.csv
+            `-- raw_TF_gene_pairs.tsv
+```
+
+**Naming conventions.** `<species>` is always the lower-case short name:
+`bifurca`, `brachi`, `formosa`, `gracilis`, `infans`, `phallo`, `picta`,
+`prolifica`, `turneri`. Two renames are needed after download, because the
+deposited archives are flat:
+
+- Seurat objects are deposited under their analysis names
+  (`bifurca_harmony_annotated.rds`, `TurneriAtlas_pregnant_non_pregnant_juvenile.rds`,
+  and so on). Rename each to `<species>_atlas.rds`. *P. gracilis* and
+  *P. turneri* also have a pregnant-only atlas; name those
+  `<species>_atlas_pregnant.rds`. Panels use the combined atlas unless
+  stated otherwise - Figure 1B uses the pregnant-only *P. turneri* atlas.
+- ArchR project objects are deposited as `<species>_Save-ArchR-Project.rds`.
+  Drop the prefix so each becomes `Save-ArchR-Project.rds` inside its own
+  `<species>/` folder, with that species' arrow files in `ArrowFiles/` beside it.
+  `loadArchRProject()` re-points the arrow paths itself on first load. On a
+  network filesystem set `Sys.setenv(HDF5_USE_FILE_LOCKING = "FALSE")` first.
+
+Every atlas carries a `cell_type` column in `meta.data` using one vocabulary
+across all nine species. The scripts below use that column rather than the
+per-species cluster numbers, so the same code runs for every species.
+
+## Panels in this file
+
+| Panel | Chunk | Status |
+|---|---|---|
+| S4A | `sf4a` | dendrogram of 1 - SAMap score across the nine poeciliids |
+| S4B | `sf4b` | bootstrapped tree from pseudobulk expression and GSI |
+
+S4A re-plots the matrix behind Figure 2B as a tree; S4B asks the same question
+from expression directly, so the two are independent checks of each other.
+
+```{r knitr-setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
+                      fig.align = "center", dev = "png", dpi = 300)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+## PURPOSE : Set the two paths every chunk below reads from, and load packages.
+## PRODUCES: DATA_DIR, REF_DIR, SPECIES
+## QUESTION: none - configuration only.
+
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"   # master folder described above
+REF_DIR  <- "../../data/reference"            # reference tables, committed in this repo
+
+stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
+
+## Seurat is loaded first on purpose: its Bioconductor dependencies mask several
+## dplyr verbs, so dplyr must come last to win
+suppressPackageStartupMessages({
+  library(Seurat)
+  library(dendextend); library(corrr); library(ape)
+  library(tidyr); library(readr); library(tibble); library(stringr); library(dplyr)
+})
+
+## the species column in the orthology table is "brac_gene_name" for brachi
+SPECIES  <- c("gracilis","bifurca","formosa","infans","phallo",
+              "brachi","prolifica","picta","turneri")
+ORTHO_COL <- setNames(paste0(c("gracilis","bifurca","formosa","infans","phallo",
+                               "brac","prolifica","picta","turneri"), "_gene_name"),
+                      SPECIES)
+```
+
+```{r sf4a, fig.width = 10, fig.height = 8}
+## PURPOSE : Supplementary 4A - cluster all retained clusters on 1 - Pearson
+##           correlation of their SAMap profiles.
+## PRODUCES: the dendrogram, printed in the document
+## QUESTION: does the SAMap signal group cell types across species rather than
+##           grouping all clusters of one species together?
+
+mat <- as.matrix(read.csv(
+  file.path(REF_DIR, "rna", "SAMap", "MappingValues_Pairwise_samap.txt"),
+  row.names = 1))
+
+samap_clusters <- c(
+  "bi_0","bi_2","bi_3","bi_6","bi_7","bi_8","bi_12","bi_19",
+  "pr_1","pr_3","pr_5","pr_6","pr_8","pr_9","pr_10","pr_12","pr_17",
+  "tu_1","tu_2","tu_3","tu_4","tu_5","tu_9","tu_10","tu_11","tu_12",
+  "fo_0","fo_1","fo_2","fo_5","fo_6","fo_7","fo_8","fo_9","fo_11",
+  "pi_1","pi_2","pi_3","pi_4","pi_5","pi_6","pi_7",
+  "in_0","in_2","in_3","in_4","in_5","in_6","in_7","in_12",
+  "gr_0","gr_2","gr_3","gr_4","gr_5","gr_7","gr_10","gr_11","gr_14",
+  "br_0","br_1","br_3","br_5","br_6","br_7","br_9","br_11","br_13","br_14")
+
+## subset in the matrix's own order, as Diego's script does
+keep      <- setdiff(rownames(mat)[rownames(mat) %in% samap_clusters],
+                     grep("^ze_", rownames(mat), value = TRUE))
+samap_mat <- mat[keep, keep]
+diag(samap_mat) <- 1
+
+## The matrix is labelled <two-letter species>_<cluster number>. The cleaned
+## atlases no longer carry that clustering, so the cluster -> cell type key is
+## committed alongside the matrix; see its `source` column for how each was set.
+CLUSTER_KEY <- read.csv(file.path(REF_DIR, "rna", "SAMap", "cluster_cell_types.csv"))
+cell_type_of <- setNames(CLUSTER_KEY$cell_type, CLUSTER_KEY$label)
+
+## a species may have several clusters of one type, so the cluster id is kept in
+## the label to keep rows distinguishable and traceable back to the matrix
+pretty_label <- function(x) ifelse(is.na(cell_type_of[x]), x,
+                                   sprintf("%s (%s)", cell_type_of[x], x))
+
+rownames(samap_mat) <- colnames(samap_mat) <- pretty_label(rownames(samap_mat))
+
+dend <- as.dendrogram(hclust(as.dist(1 - cor(t(samap_mat), method = "pearson")),
+                             method = "average")) |>
+  color_branches(k = 10) |>
+  set("labels_cex", 0.5) |>
+  set("labels_col", "black")
+
+plot(dend, main = "1 - Pearson on SAMap profiles", horiz = TRUE)
+```
+
+### S4B - pseudobulk tree
+
+```{r sf4b-orthologues}
+## PURPOSE : Keep the strict 1:1 orthogroups present in all nine species, so the
+##           pseudobulk profiles can be compared gene by gene.
+## PRODUCES: ortho_clean - one row per orthogroup, one column per species
+## QUESTION: none - this defines the shared gene space for the tree.
+
+ortho <- read_csv(file.path(REF_DIR, "rna", "Orthology",
+                            "orthology_table_orthofinder_possvm.csv"),
+                  show_col_types = FALSE)
+
+species_cols <- unname(ORTHO_COL)
+
+is_single_copy <- function(x) !is.na(x) & !grepl(";", x)
+
+ortho_clean <- ortho |>
+  mutate(across(all_of(species_cols), ~ trimws(str_replace_all(., '"', '')))) |>
+  filter(across(all_of(species_cols), is_single_copy)) |>
+  ## drop the species prefix and the isoform suffix so ids match the atlases
+  mutate(across(all_of(species_cols), ~ sub("^[a-z]+_", "", .))) |>
+  mutate(across(all_of(species_cols), ~ sub("-T\\d+$", "", .)))
+
+## a gene may only represent one orthogroup in any species
+for (cl in species_cols) ortho_clean <- ortho_clean[!duplicated(ortho_clean[[cl]]), ]
+
+nrow(ortho_clean)
+```
+
+```{r sf4b-pseudobulk}
+## PURPOSE : Average expression per cell type in each species, then express every
+##           gene relative to its own mean across cell types (GSI).
+## PRODUCES: pseud_gsi - genes x (species_cell type), on the shared gene space
+## QUESTION: none - this builds the matrix the tree is computed from.
+
+## bifurca's gene ids are used as the common key across species
+KEY <- ORTHO_COL[["bifurca"]]
+
+pseudobulk_species <- function(sp) {
+  obj <- readRDS(file.path(DATA_DIR, "snRNA", "seurat", paste0(sp, "_atlas.rds")))
+  m   <- as.matrix(AverageExpression(obj, group.by = "cell_type", layer = "counts")[[1]])
+
+  ## drop mitochondrial and unannotated models, then strip the isoform suffix
+  m <- m[!grepl("^(m-|nbis)", rownames(m)), , drop = FALSE]
+  rownames(m) <- make.unique(sub("-.*$", "", rownames(m)), sep = "")
+  m <- m[rowSums(m) > 0, , drop = FALSE]
+
+  colnames(m) <- paste(sp, colnames(m), sep = "_")
+
+  ## a two-column lookup with fixed names. Selecting c(KEY, ORTHO_COL[[sp]])
+  ## instead would name the same column twice for bifurca, whose own column is
+  ## the key, and inner_join rejects duplicated names in y.
+  lut <- data.frame(sp_gene = ortho_clean[[ORTHO_COL[[sp]]]],
+                    gene    = ortho_clean[[KEY]],
+                    stringsAsFactors = FALSE)
+
+  as.data.frame(m) |>
+    tibble::rownames_to_column("sp_gene") |>
+    inner_join(lut, by = "sp_gene") |>
+    distinct(gene, .keep_all = TRUE)
+}
+
+tabs <- lapply(setNames(SPECIES, SPECIES), pseudobulk_species)
+
+common <- Reduce(intersect, lapply(tabs, `[[`, "gene"))
+message(length(common), " genes shared by all nine species")
+
+pseud <- Reduce(function(a, b) inner_join(a, b, by = "gene"),
+                ## dplyr:: is explicit because Seurat's Bioconductor dependencies
+                ## export S4 generics of the same names that do not take data frames
+                lapply(tabs, \(d) dplyr::filter(d, gene %in% common) |>
+                                   dplyr::select(-sp_gene))) |>
+  column_to_rownames("gene")
+
+## GSI: each gene's profile relative to its own mean across cell types
+pseud_gsi <- sweep(pseud, 1, rowMeans(pseud), "/")
+dim(pseud_gsi)
+```
+
+```{r sf4b, fig.width = 9, fig.height = 8}
+## PURPOSE : Supplementary 4B - build a cell-type tree from the placental species'
+##           GSI profiles, with bootstrap support over resampled genes.
+## PRODUCES: the tree with bootstrap-coloured nodes, printed in the document
+## QUESTION: do homologous cell types group together with statistical support,
+##           independently of the SAMap result?
+
+## the tree is built on the placental species, as in the paper
+PLACENTAL <- c("bifurca","turneri","prolifica","formosa","phallo")
+dat <- pseud_gsi[, grepl(paste0("^(", paste(PLACENTAL, collapse = "|"), ")_"),
+                         colnames(pseud_gsi))]
+
+corr_method    <- "pearson"
+bootstrap.reps <- 1000
+set.seed(1)
+
+## resample genes with replacement, rebuild the tree each time
+## (approach from F. Murat, Kaessmann lab spermatogenesis paper)
+mytrees <- lapply(seq_len(bootstrap.reps), function(i) {
+  sampled <- dat[sample(nrow(dat), nrow(dat), replace = TRUE), ]
+  cm <- sampled |> correlate(method = corr_method, diagonal = 1, quiet = TRUE) |>
+    column_to_rownames("term")
+  as.phylo(hclust(as.dist(1 - cm), method = "ward.D2"))
+})
+
+## show the topology that is most compatible with the whole set
+parts <- prop.part(mytrees, check.labels = TRUE)
+best  <- which.max(vapply(mytrees, \(t) sum(prop.clades(t, part = parts, rooted = FALSE),
+                                            na.rm = TRUE), numeric(1)))
+tree  <- mytrees[[best]]
+boot  <- prop.clades(tree, part = parts, rooted = FALSE) / bootstrap.reps
+
+node_col <- cut(boot, breaks = c(-Inf, 0.5, 0.7, 0.9, Inf),
+                labels = c("red", "darkorange1", "darkgoldenrod1", "chartreuse3")) |>
+  as.character()
+
+plot(tree, cex = 1, edge.width = 2, label.offset = 0.01, no.margin = TRUE)
+title(main = sprintf("1 - %s, %d genes, %d bootstrap replicates",
+                     corr_method, nrow(dat), bootstrap.reps),
+      cex.main = 1.1, line = -2)
+nodelabels(pch = 21, col = "black", bg = node_col, cex = 2)
+legend("right", legend = c("> 0.9", "> 0.7", "> 0.5", "< 0.5"),
+       col = c("chartreuse3", "darkgoldenrod1", "darkorange1", "red"),
+       pch = 19, title = "Bootstrap", inset = 0.05)
+```

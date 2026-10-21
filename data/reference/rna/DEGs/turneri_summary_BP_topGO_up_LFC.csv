@@ -1,0 +1,201 @@
+GO.ID,Term,Annotated,Significant,Expected,weightFisher,p.adj
+GO:0007154,cell communication,5906,290,237.86,6.1e-06,0.065923
+GO:0065007,biological regulation,11327,506,456.18,1.3e-05,0.065923
+GO:1901564,organonitrogen compound metabolic proces...,5975,287,240.64,1.8e-05,0.065923
+GO:0023052,signaling,5836,286,235.04,2.0e-05,0.065923
+GO:0065008,regulation of biological quality,3539,200,142.53,3.3e-05,0.065923
+GO:0071825,protein-lipid complex subunit organizati...,45,9,1.81,4.3e-05,0.065923
+GO:0008283,cell population proliferation,1677,99,67.54,4.7e-05,0.065923
+GO:0048519,negative regulation of biological proces...,4839,241,194.88,5.2e-05,0.065923
+GO:0048518,positive regulation of biological proces...,5689,277,229.12,5.3e-05,0.065923
+GO:0048523,negative regulation of cellular process,4298,217,173.1,5.3e-05,0.065923
+GO:0048870,cell motility,1641,97,66.09,5.4e-05,0.065923
+GO:0071470,cellular response to osmotic stress,46,9,1.85,5.4e-05,0.065923
+GO:0040011,locomotion,1326,82,53.4,6.0e-05,0.065923
+GO:0019538,protein metabolic process,5014,246,201.93,6.5e-05,0.065923
+GO:0017014,protein nitrosylation,10,5,0.4,6.5e-05,0.065923
+GO:0010873,positive regulation of cholesterol ester...,6,4,0.24,8.1e-05,0.0770158125
+GO:0010466,negative regulation of peptidase activit...,153,18,6.16,9.8e-05,0.080068421052632
+GO:0071827,plasma lipoprotein particle organization,42,9,1.69,9.8e-05,0.080068421052632
+GO:0040012,regulation of locomotion,1014,70,40.84,0.00010,0.080068421052632
+GO:0050896,response to stimulus,7955,367,320.38,0.00015,0.11064
+GO:0007165,signal transduction,5315,256,214.05,0.00016,0.11064
+GO:0048583,regulation of response to stimulus,3633,194,146.31,0.00016,0.11064
+GO:0065005,protein-lipid complex assembly,31,7,1.25,0.00018,0.119058260869565
+GO:0050789,regulation of biological process,10584,470,426.26,0.00019,0.12043625
+GO:0051716,cellular response to stimulus,6732,313,271.12,0.00021,0.122874230769231
+GO:0048522,positive regulation of cellular process,5105,246,205.6,0.00021,0.122874230769231
+GO:2000145,regulation of cell motility,958,65,38.58,0.00022,0.123957777777778
+GO:0040007,growth,956,61,38.5,0.00024,0.130397142857143
+GO:0034367,protein-containing complex remodeling,24,6,0.97,0.00025,0.131146551724138
+GO:0050794,regulation of cellular process,9974,442,401.69,0.00026,0.131846
+GO:0001701,in utero embryonic development,363,27,14.62,0.00031,0.15213
+GO:0019730,antimicrobial humoral response,52,9,2.09,0.00038,0.180654375
+GO:0002376,immune system process,2183,118,87.92,0.00044,0.196874117647059
+GO:0006757,ATP generation from ADP,83,10,3.34,0.00044,0.196874117647059
+GO:2000147,positive regulation of cell motility,567,45,22.84,0.00046,0.199942285714286
+GO:0010604,positive regulation of macromolecule met...,3075,157,123.84,0.00048,0.20284
+GO:0043588,skin development,196,20,7.89,0.00064,0.256218947368421
+GO:0097006,regulation of plasma lipoprotein particl...,55,9,2.22,0.00064,0.256218947368421
+GO:0032501,multicellular organismal process,6930,320,279.1,0.00068,0.260794285714286
+GO:0010628,positive regulation of gene expression,956,58,38.5,0.00069,0.260794285714286
+GO:0040017,positive regulation of locomotion,589,46,23.72,0.00071,0.260794285714286
+GO:1901615,organic hydroxy compound metabolic proce...,499,36,20.1,0.00072,0.260794285714286
+GO:0032502,developmental process,6462,300,260.25,0.00083,0.293646279069767
+GO:0006959,humoral immune response,116,14,4.67,0.00088,0.30426
+GO:0043691,reverse cholesterol transport,18,7,0.72,0.00092,0.311021333333333
+GO:0051246,regulation of protein metabolic process,2177,122,87.68,0.00104,0.339864893617021
+GO:0010586,miRNA metabolic process,71,7,2.86,0.00105,0.339864893617021
+GO:0051172,negative regulation of nitrogen compound...,1982,109,79.82,0.00108,0.3422925
+GO:0045861,negative regulation of proteolysis,220,21,8.86,0.00112,0.347725714285714
+GO:0040008,regulation of growth,637,45,25.65,0.00119,0.3620694
+GO:0006793,phosphorus metabolic process,2654,138,106.89,0.00122,0.363918823529412
+GO:0009892,negative regulation of metabolic process,2559,133,103.06,0.00135,0.378942
+GO:0043412,macromolecule modification,3686,182,148.45,0.00136,0.378942
+GO:0016043,cellular component organization,6299,263,253.68,0.00137,0.378942
+GO:0048584,positive regulation of response to stimu...,1887,108,76,0.00137,0.378942
+GO:0019755,one-carbon compound transport,19,5,0.77,0.00145,0.393908035714286
+GO:0090327,negative regulation of locomotion involv...,5,3,0.2,0.00148,0.395004210526316
+GO:0097242,amyloid-beta clearance,38,7,1.53,0.00153,0.401308448275862
+GO:0009893,positive regulation of metabolic process,3361,169,135.36,0.00159,0.409977457627119
+GO:0051788,response to misfolded protein,19,3,0.77,0.00176,0.446248
+GO:0042886,amide transport,288,23,11.6,0.00196,0.488811147540984
+GO:0006629,lipid metabolic process,1278,73,51.47,0.00200,0.4896684375
+GO:0010876,lipid localization,439,33,17.68,0.00205,0.4896684375
+GO:0010872,regulation of cholesterol esterification,13,4,0.52,0.00206,0.4896684375
+GO:0006165,nucleoside diphosphate phosphorylation,97,11,3.91,0.00213,0.498518307692308
+GO:0048869,cellular developmental process,4200,200,169.15,0.00224,0.51632
+GO:0006809,nitric oxide biosynthetic process,46,7,1.85,0.00236,0.532455
+GO:0072359,circulatory system development,1200,76,48.33,0.00238,0.532455
+GO:0071217,cellular response to external biotic sti...,2,2,0.08,0.00249,0.548990869565217
+GO:0010646,regulation of cell communication,3247,171,130.77,0.00254,0.552014571428571
+GO:1902659,regulation of glucose mediated signaling...,2,2,0.08,0.00277,0.593521267605634
+GO:0106070,regulation of adenylate cyclase-activati...,11,4,0.44,0.00290,0.612745833333333
+GO:1902661,positive regulation of glucose mediated ...,2,2,0.08,0.00296,0.616855890410959
+GO:0055083,monovalent inorganic anion homeostasis,24,6,0.97,0.00303,0.622910675675676
+GO:0023051,regulation of signaling,3259,172,131.25,0.00324,0.6572016
+GO:0045935,positive regulation of nucleobase-contai...,1757,91,70.76,0.00329,0.658562763157895
+GO:0045980,negative regulation of nucleotide metabo...,23,5,0.93,0.00340,0.667031538461539
+GO:2001237,negative regulation of extrinsic apoptot...,84,10,3.38,0.00342,0.667031538461539
+GO:0019858,cytosine metabolic process,3,3,0.12,0.00351,0.67317525
+GO:0061061,muscle structure development,631,45,25.41,0.00354,0.67317525
+GO:0031651,negative regulation of heat generation,2,2,0.08,0.00360,0.673453536585366
+GO:0007009,plasma membrane organization,151,13,6.08,0.00363,0.673453536585366
+GO:2001057,reactive nitrogen species metabolic proc...,48,7,1.93,0.00374,0.685501445783132
+GO:0043467,regulation of generation of precursor me...,116,12,4.67,0.00419,0.758838928571429
+GO:1990573,potassium ion import across plasma membr...,39,6,1.57,0.00432,0.76949476744186
+GO:0080090,regulation of primary metabolic process,5041,234,203.02,0.00435,0.76949476744186
+GO:0110114,negative regulation of lipid transporter...,2,2,0.08,0.00491,0.84881625
+GO:0018193,peptidyl-amino acid modification,1226,79,49.38,0.00491,0.84881625
+GO:1905475,regulation of protein localization to me...,189,16,7.61,0.00518,0.879344835164835
+GO:0016049,cell growth,513,33,20.66,0.00524,0.879344835164835
+GO:0001806,type IV hypersensitivity,6,2,0.24,0.00526,0.879344835164835
+GO:0000045,autophagosome assembly,115,8,4.63,0.00568,0.923646428571429
+GO:0019222,regulation of metabolic process,5880,270,236.81,0.00573,0.923646428571429
+GO:0018119,peptidyl-cysteine S-nitrosylation,9,4,0.36,0.00586,0.923646428571429
+GO:0070922,RISC complex assembly,6,2,0.24,0.00587,0.923646428571429
+GO:0001944,vasculature development,766,51,30.85,0.00599,0.923646428571429
+GO:0061450,trophoblast cell migration,9,3,0.36,0.00602,0.923646428571429
+GO:0001568,blood vessel development,721,49,29.04,0.00608,0.923646428571429
+GO:0033700,phospholipid efflux,12,5,0.48,0.00609,0.923646428571429
+GO:0006970,response to osmotic stress,89,10,3.58,0.00614,0.923646428571429
+GO:0045428,regulation of nitric oxide biosynthetic ...,39,6,1.57,0.00626,0.923646428571429
+GO:0002363,alpha-beta T cell lineage commitment,24,4,0.97,0.00636,0.923646428571429
+GO:1904407,positive regulation of nitric oxide meta...,25,5,1.01,0.00640,0.923646428571429
+GO:1901838,positive regulation of transcription of ...,7,3,0.28,0.00641,0.923646428571429
+GO:0009757,hexose mediated signaling,5,2,0.2,0.00644,0.923646428571429
+GO:0000082,G1/S transition of mitotic cell cycle,201,14,8.1,0.00647,0.923646428571429
+GO:0051128,regulation of cellular component organiz...,2336,120,94.08,0.00656,0.923646428571429
+GO:0060123,regulation of growth hormone secretion,13,4,0.52,0.00662,0.923646428571429
+GO:0044255,cellular lipid metabolic process,927,54,37.33,0.00664,0.923646428571429
+GO:0010255,glucose mediated signaling pathway,5,2,0.2,0.00673,0.923646428571429
+GO:0051248,negative regulation of protein metabolic...,875,56,35.24,0.00675,0.923646428571429
+GO:0010962,regulation of glucan biosynthetic proces...,35,6,1.41,0.00680,0.923646428571429
+GO:0034381,plasma lipoprotein particle clearance,27,5,1.09,0.00710,0.955861061946903
+GO:0046031,ADP metabolic process,91,10,3.66,0.00731,0.971871818181818
+GO:0015669,gas transport,27,5,1.09,0.00739,0.971871818181818
+GO:0097067,cellular response to thyroid hormone sti...,13,4,0.52,0.00743,0.971871818181818
+GO:0070584,mitochondrion morphogenesis,20,4,0.81,0.00759,0.971871818181818
+GO:0042403,thyroid hormone metabolic process,16,4,0.64,0.00766,0.971871818181818
+GO:0010903,negative regulation of very-low-density ...,3,2,0.12,0.00771,0.971871818181818
+GO:0015914,phospholipid transport,97,12,3.91,0.00772,0.971871818181818
+GO:0015918,sterol transport,101,12,4.07,0.00773,0.971871818181818
+GO:0048010,vascular endothelial growth factor recep...,44,7,1.77,0.00785,0.978869262295082
+GO:0031987,locomotion involved in locomotory behavi...,14,4,0.56,0.00809,0.996206129032258
+GO:0045429,positive regulation of nitric oxide bios...,25,5,1.01,0.00812,0.996206129032258
+GO:0001807,regulation of type IV hypersensitivity,6,2,0.24,0.00820,0.9979728
+GO:0080164,regulation of nitric oxide metabolic pro...,39,6,1.57,0.00835,1
+GO:0019725,cellular homeostasis,694,41,27.95,0.00839,1
+GO:0070874,negative regulation of glycogen metaboli...,9,3,0.36,0.00846,1
+GO:0014745,negative regulation of muscle adaptation,16,4,0.64,0.00861,1
+GO:0140157,ammonium import across plasma membrane,2,2,0.08,0.00874,1
+GO:0051569,regulation of histone H3-K4 methylation,41,5,1.65,0.00900,1
+GO:2000169,regulation of peptidyl-cysteine S-nitros...,3,2,0.12,0.00907,1
+GO:0031325,positive regulation of cellular metaboli...,2706,135,108.98,0.00912,1
+GO:0016601,Rac protein signal transduction,52,8,2.09,0.00947,1
+GO:0060621,negative regulation of cholesterol impor...,2,2,0.08,0.00952,1
+GO:0051571,positive regulation of histone H3-K4 met...,36,5,1.45,0.00962,1
+GO:0034380,high-density lipoprotein particle assemb...,16,7,0.64,0.00966,1
+GO:0046898,response to cycloheximide,10,3,0.4,0.00966,1
+GO:0010971,positive regulation of G2/M transition o...,14,3,0.56,0.01019,1
+GO:0007403,glial cell fate determination,3,2,0.12,0.01028,1
+GO:1990402,embryonic liver development,4,2,0.16,0.01058,1
+GO:0072488,ammonium transmembrane transport,11,3,0.44,0.01069,1
+GO:0006110,regulation of glycolytic process,39,6,1.57,0.01070,1
+GO:0000429,carbon catabolite regulation of transcri...,4,2,0.16,0.01090,1
+GO:0009891,positive regulation of biosynthetic proc...,1767,92,71.16,0.01095,1
+GO:0035701,hematopoietic stem cell migration,3,2,0.12,0.01103,1
+GO:0045719,negative regulation of glycogen biosynth...,8,3,0.32,0.01104,1
+GO:1902667,regulation of axon guidance,10,3,0.4,0.01104,1
+GO:0050878,regulation of body fluid levels,305,27,12.28,0.01125,1
+GO:0046939,nucleotide phosphorylation,105,12,4.23,0.01169,1
+GO:0051241,negative regulation of multicellular org...,952,58,38.34,0.01179,1
+GO:0032870,cellular response to hormone stimulus,598,40,24.08,0.01183,1
+GO:0070873,regulation of glycogen metabolic process,41,6,1.65,0.01184,1
+GO:0106072,negative regulation of adenylate cyclase...,8,3,0.32,0.01185,1
+GO:0043373,"CD4-positive, alpha-beta T cell lineage ...",22,4,0.89,0.01192,1
+GO:0003279,cardiac septum development,92,10,3.71,0.01193,1
+GO:0032101,regulation of response to external stimu...,856,56,34.47,0.01206,1
+GO:0031581,hemidesmosome assembly,7,3,0.28,0.01207,1
+GO:0032885,regulation of polysaccharide biosyntheti...,46,6,1.85,0.01210,1
+GO:0030335,positive regulation of cell migration,554,45,22.31,0.01229,1
+GO:0019731,antibacterial humoral response,17,4,0.68,0.01243,1
+GO:0090325,regulation of locomotion involved in loc...,8,3,0.32,0.01248,1
+GO:0009303,rRNA transcription,23,3,0.93,0.01250,1
+GO:0045944,positive regulation of transcription by ...,1024,56,41.24,0.01258,1
+GO:0009299,mRNA transcription,33,5,1.33,0.01260,1
+GO:0071875,adrenergic receptor signaling pathway,36,5,1.45,0.01283,1
+GO:0051443,positive regulation of ubiquitin-protein...,24,4,0.97,0.01320,1
+GO:0055075,potassium ion homeostasis,31,6,1.25,0.01323,1
+GO:1904059,regulation of locomotor rhythm,4,2,0.16,0.01328,1
+GO:0048521,negative regulation of behavior,18,4,0.72,0.01333,1
+GO:0010951,negative regulation of endopeptidase act...,148,16,5.96,0.01335,1
+GO:0042127,regulation of cell population proliferat...,1382,78,55.66,0.01346,1
+GO:0007229,integrin-mediated signaling pathway,100,11,4.03,0.01378,1
+GO:0050932,regulation of pigment cell differentiati...,4,2,0.16,0.01408,1
+GO:0051239,regulation of multicellular organismal p...,2571,133,103.54,0.01417,1
+GO:0031328,positive regulation of cellular biosynth...,1723,89,69.39,0.01423,1
+GO:0010901,regulation of very-low-density lipoprote...,4,2,0.16,0.01430,1
+GO:0051171,regulation of nitrogen compound metaboli...,4875,225,196.33,0.01437,1
+GO:1901836,regulation of transcription of nucleolar...,12,3,0.48,0.01449,1
+GO:0045837,negative regulation of membrane potentia...,16,3,0.64,0.01458,1
+GO:0065009,regulation of molecular function,2704,142,108.9,0.01465,1
+GO:1900221,regulation of amyloid-beta clearance,19,4,0.77,0.01466,1
+GO:0140448,signaling receptor ligand precursor proc...,15,3,0.6,0.01493,1
+GO:0050942,positive regulation of pigment cell diff...,4,2,0.16,0.01507,1
+GO:0110112,regulation of lipid transporter activity,4,2,0.16,0.01509,1
+GO:0051254,positive regulation of RNA metabolic pro...,1584,81,63.79,0.01509,1
+GO:0032103,positive regulation of response to exter...,386,30,15.55,0.01511,1
+GO:0051918,negative regulation of fibrinolysis,11,3,0.44,0.01525,1
+GO:0034114,regulation of heterotypic cell-cell adhe...,20,4,0.81,0.01528,1
+GO:1903508,positive regulation of nucleic acid-temp...,1459,73,58.76,0.01543,1
+GO:0050817,coagulation,160,14,6.44,0.01567,1
+GO:0060627,regulation of vesicle-mediated transport,533,34,21.47,0.01576,1
+GO:0048730,epidermis morphogenesis,21,4,0.85,0.01585,1
+GO:0032787,monocarboxylic acid metabolic process,501,31,20.18,0.01624,1
+GO:0000436,carbon catabolite activation of transcri...,4,2,0.16,0.01642,1
+GO:0045893,positive regulation of DNA-templated tra...,1459,73,58.76,0.01644,1
+GO:0007189,adenylate cyclase-activating G protein-c...,139,12,5.6,0.01648,1
+GO:0051173,positive regulation of nitrogen compound...,2733,134,110.07,0.01654,1
+GO:0006361,transcription initiation at RNA polymera...,14,3,0.56,0.01663,1
+GO:0007584,response to nutrient,135,13,5.44,0.01676,1

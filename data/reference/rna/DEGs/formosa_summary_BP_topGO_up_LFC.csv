@@ -1,0 +1,201 @@
+GO.ID,Term,Annotated,Significant,Expected,weightFisher,p.adj
+GO:0006412,translation,583,58,14.79,3.6e-18,5.5e-14
+GO:0006518,peptide metabolic process,733,65,18.59,2.8e-15,2.1228e-11
+GO:0043603,cellular amide metabolic process,972,69,24.65,9.0e-15,4.5489e-11
+GO:0034645,cellular macromolecule biosynthetic proc...,1024,68,25.97,1.3e-12,4.927975e-09
+GO:0043604,amide biosynthetic process,716,58,18.16,2.0e-12,6.0652e-09
+GO:0043043,peptide biosynthetic process,603,58,15.29,1.4e-09,3.538033333e-06
+GO:0002181,cytoplasmic translation,118,30,2.99,1.4e-08,3.0326e-05
+GO:1901566,organonitrogen compound biosynthetic pro...,1488,77,37.74,8.0e-08,0.000138151777778
+GO:0015669,gas transport,25,8,0.63,8.2e-08,0.000138151777778
+GO:0044260,cellular macromolecule metabolic process,2775,107,70.38,8.7e-05,0.1319181
+GO:0042255,ribosome assembly,54,10,1.37,0.00011,0.15163
+GO:0045861,negative regulation of proteolysis,208,17,5.28,0.00013,0.164265833333333
+GO:0051346,negative regulation of hydrolase activit...,242,17,6.14,0.00015,0.174957692307692
+GO:0071826,ribonucleoprotein complex subunit organi...,163,13,4.13,0.00017,0.181956
+GO:0009636,response to toxic substance,197,16,5,0.00018,0.181956
+GO:0098754,detoxification,104,10,2.64,0.00031,0.269564444444444
+GO:0140694,non-membrane-bounded organelle assembly,355,21,9,0.00031,0.269564444444444
+GO:0022613,ribonucleoprotein complex biogenesis,389,22,9.87,0.00032,0.269564444444444
+GO:0042744,hydrogen peroxide catabolic process,22,5,0.56,0.00036,0.287298947368421
+GO:0150079,negative regulation of neuroinflammatory...,16,4,0.41,0.00039,0.2956785
+GO:1990748,cellular detoxification,93,9,2.36,0.00045,0.324921428571429
+GO:0052547,regulation of peptidase activity,304,20,7.71,0.00059,0.39555652173913
+GO:0022618,ribonucleoprotein complex assembly,157,13,3.98,0.00060,0.39555652173913
+GO:0019538,protein metabolic process,4728,159,119.91,0.00078,0.472385769230769
+GO:0000028,ribosomal small subunit assembly,18,6,0.46,0.00079,0.472385769230769
+GO:0008202,steroid metabolic process,241,15,6.11,0.00081,0.472385769230769
+GO:0008152,metabolic process,9842,279,249.61,0.00100,0.561592592592593
+GO:0097237,cellular response to toxic substance,108,10,2.74,0.00113,0.610852285714286
+GO:0045765,regulation of angiogenesis,222,11,5.63,0.00124,0.610852285714286
+GO:0010951,negative regulation of endopeptidase act...,135,14,3.42,0.00127,0.610852285714286
+GO:0009188,ribonucleoside diphosphate biosynthetic ...,9,3,0.23,0.00127,0.610852285714286
+GO:1901564,organonitrogen compound metabolic proces...,5634,184,142.89,0.00132,0.610852285714286
+GO:0045766,positive regulation of angiogenesis,128,9,3.25,0.00136,0.610852285714286
+GO:1904018,positive regulation of vasculature devel...,128,9,3.25,0.00140,0.610852285714286
+GO:0043154,negative regulation of cysteine-type end...,42,6,1.07,0.00141,0.610852285714286
+GO:0043030,regulation of macrophage activation,42,5,1.07,0.00149,0.627579722222222
+GO:0090068,positive regulation of cell cycle proces...,204,10,5.17,0.00164,0.67208972972973
+GO:0009133,nucleoside diphosphate biosynthetic proc...,11,3,0.28,0.00190,0.75815
+GO:0048477,oogenesis,110,9,2.79,0.00203,0.78925358974359
+GO:0009994,oocyte differentiation,63,6,1.6,0.00234,0.8870355
+GO:0090130,tissue migration,295,16,7.48,0.00244,0.888118571428571
+GO:0042221,response to chemical,3435,102,87.12,0.00246,0.888118571428571
+GO:0042274,ribosomal small subunit biogenesis,60,9,1.52,0.00267,0.927010681818182
+GO:0006694,steroid biosynthetic process,125,9,3.17,0.00269,0.927010681818182
+GO:0006172,ADP biosynthetic process,4,2,0.1,0.00283,0.952631956521739
+GO:1904588,cellular response to glycoprotein,3,2,0.08,0.00289,0.952631956521739
+GO:0001556,oocyte maturation,27,4,0.68,0.00310,1
+GO:0010591,regulation of lamellipodium assembly,39,3,0.99,0.00323,1
+GO:0042127,regulation of cell population proliferat...,1290,43,32.72,0.00353,1
+GO:0046940,nucleoside monophosphate phosphorylation,12,3,0.3,0.00364,1
+GO:0010632,regulation of epithelial cell migration,208,12,5.28,0.00380,1
+GO:0010466,negative regulation of peptidase activit...,138,14,3.5,0.00412,1
+GO:0030162,regulation of proteolysis,539,27,13.67,0.00417,1
+GO:0070875,positive regulation of glycogen metaboli...,26,4,0.66,0.00425,1
+GO:0010592,positive regulation of lamellipodium ass...,28,3,0.71,0.00430,1
+GO:0060359,response to ammonium ion,4,2,0.1,0.00442,1
+GO:0031670,cellular response to nutrient,37,5,0.94,0.00445,1
+GO:0044703,multi-organism reproductive process,151,10,3.83,0.00467,1
+GO:0060086,circadian temperature homeostasis,5,2,0.13,0.00531,1
+GO:0044271,cellular nitrogen compound biosynthetic ...,3861,125,97.92,0.00557,1
+GO:0044706,multi-multicellular organism process,158,10,4.01,0.00558,1
+GO:0070887,cellular response to chemical stimulus,2600,77,65.94,0.00562,1
+GO:0060463,lung lobe morphogenesis,6,2,0.15,0.00597,1
+GO:0010721,negative regulation of cell development,176,10,4.46,0.00611,1
+GO:0031647,regulation of protein stability,253,14,6.42,0.00613,1
+GO:1904253,positive regulation of bile acid metabol...,5,2,0.13,0.00614,1
+GO:0042743,hydrogen peroxide metabolic process,41,5,1.04,0.00623,1
+GO:0070859,positive regulation of bile acid biosynt...,5,2,0.13,0.00644,1
+GO:0033363,secretory granule organization,48,5,1.22,0.00716,1
+GO:0031668,cellular response to extracellular stimu...,238,12,6.04,0.00723,1
+GO:0061888,regulation of astrocyte activation,6,2,0.15,0.00732,1
+GO:0008630,intrinsic apoptotic signaling pathway in...,96,6,2.43,0.00750,1
+GO:1902229,regulation of intrinsic apoptotic signal...,34,4,0.86,0.00812,1
+GO:0070371,ERK1 and ERK2 cascade,227,9,5.76,0.00854,1
+GO:0042307,positive regulation of protein import in...,26,2,0.66,0.00863,1
+GO:0060462,lung lobe development,6,2,0.15,0.00886,1
+GO:2000641,regulation of early endosome to late end...,13,2,0.33,0.00912,1
+GO:0009136,purine nucleoside diphosphate biosynthet...,5,2,0.13,0.00947,1
+GO:0009914,hormone transport,287,14,7.28,0.00970,1
+GO:0010564,regulation of cell cycle process,610,17,15.47,0.00980,1
+GO:0009180,purine ribonucleoside diphosphate biosyn...,5,2,0.13,0.00982,1
+GO:0045923,positive regulation of fatty acid metabo...,34,4,0.86,0.00997,1
+GO:2000147,positive regulation of cell motility,533,21,13.52,0.01034,1
+GO:0033993,response to lipid,752,31,19.07,0.01035,1
+GO:0008284,positive regulation of cell population p...,742,28,18.82,0.01066,1
+GO:0042749,regulation of circadian sleep/wake cycle,17,2,0.43,0.01069,1
+GO:1901535,regulation of DNA demethylation,7,2,0.18,0.01126,1
+GO:0045654,positive regulation of megakaryocyte dif...,7,2,0.18,0.01138,1
+GO:0070873,regulation of glycogen metabolic process,45,5,1.14,0.01158,1
+GO:0030595,leukocyte chemotaxis,187,9,4.74,0.01243,1
+GO:0000027,ribosomal large subunit assembly,21,5,0.53,0.01246,1
+GO:0051781,positive regulation of cell division,84,6,2.13,0.01255,1
+GO:1901629,regulation of presynaptic membrane organ...,1,1,0.03,0.01277,1
+GO:0031099,regeneration,230,12,5.83,0.01279,1
+GO:0010823,negative regulation of mitochondrion org...,46,4,1.17,0.01280,1
+GO:0032881,regulation of polysaccharide metabolic p...,54,5,1.37,0.01300,1
+GO:2000622,regulation of nuclear-transcribed mRNA c...,6,2,0.15,0.01373,1
+GO:0032720,negative regulation of tumor necrosis fa...,49,4,1.24,0.01382,1
+GO:0032352,positive regulation of hormone metabolic...,7,2,0.18,0.01389,1
+GO:0150077,regulation of neuroinflammatory response,42,4,1.07,0.01400,1
+GO:0010467,gene expression,4896,151,124.17,0.01408,1
+GO:0071493,cellular response to UV-B,9,3,0.23,0.01484,1
+GO:0043066,negative regulation of apoptotic process,691,25,17.53,0.01485,1
+GO:0030335,positive regulation of cell migration,525,21,13.31,0.01488,1
+GO:0050768,negative regulation of neurogenesis,145,8,3.68,0.01498,1
+GO:0006112,energy reserve metabolic process,88,7,2.23,0.01552,1
+GO:0009991,response to extracellular stimulus,445,20,11.29,0.01575,1
+GO:1902204,positive regulation of hepatocyte growth...,1,1,0.03,0.01589,1
+GO:0062013,positive regulation of small molecule me...,121,8,3.07,0.01589,1
+GO:1902745,positive regulation of lamellipodium org...,34,3,0.86,0.01594,1
+GO:0060548,negative regulation of cell death,797,29,20.21,0.01598,1
+GO:0071542,dopaminergic neuron differentiation,28,3,0.71,0.01604,1
+GO:0050810,regulation of steroid biosynthetic proce...,50,6,1.27,0.01623,1
+GO:0021796,cerebral cortex regionalization,1,1,0.03,0.01623,1
+GO:0044721,"protein import into peroxisome matrix, s...",1,1,0.03,0.01626,1
+GO:0051280,negative regulation of release of seques...,14,2,0.36,0.01635,1
+GO:2000145,regulation of cell motility,904,30,22.93,0.01698,1
+GO:0033044,regulation of chromosome organization,179,8,4.54,0.01740,1
+GO:0070309,lens fiber cell morphogenesis,12,2,0.3,0.01741,1
+GO:0051238,sequestering of metal ion,6,2,0.15,0.01778,1
+GO:0007064,mitotic sister chromatid cohesion,29,3,0.74,0.01788,1
+GO:0002790,peptide secretion,223,10,5.66,0.01813,1
+GO:0061889,negative regulation of astrocyte activat...,6,2,0.15,0.01820,1
+GO:0032755,positive regulation of interleukin-6 pro...,53,3,1.34,0.01894,1
+GO:0014074,response to purine-containing compound,126,8,3.2,0.01902,1
+GO:1990547,mitochondrial phosphate ion transmembran...,1,1,0.03,0.01905,1
+GO:1901537,positive regulation of DNA demethylation,7,2,0.18,0.01920,1
+GO:0046033,AMP metabolic process,27,3,0.68,0.01924,1
+GO:0048499,synaptic vesicle membrane organization,26,3,0.66,0.01925,1
+GO:0045725,positive regulation of glycogen biosynth...,22,3,0.56,0.01928,1
+GO:0002084,protein depalmitoylation,8,2,0.2,0.01938,1
+GO:0034764,positive regulation of transmembrane tra...,201,10,5.1,0.01945,1
+GO:0034088,maintenance of mitotic sister chromatid ...,11,2,0.28,0.01969,1
+GO:0042273,ribosomal large subunit biogenesis,66,8,1.67,0.01981,1
+GO:0051961,negative regulation of nervous system de...,152,8,3.86,0.01988,1
+GO:0043069,negative regulation of programmed cell d...,708,25,17.96,0.02013,1
+GO:0120193,tight junction organization,90,6,2.28,0.02018,1
+GO:0034086,maintenance of sister chromatid cohesion,12,2,0.3,0.02025,1
+GO:0051336,regulation of hydrolase activity,830,29,21.05,0.02033,1
+GO:0035524,proline transmembrane transport,2,1,0.05,0.02041,1
+GO:0002089,lens morphogenesis in camera-type eye,29,3,0.74,0.02042,1
+GO:0060741,prostate gland stromal morphogenesis,1,1,0.03,0.02090,1
+GO:0035809,regulation of urine volume,20,3,0.51,0.02095,1
+GO:0046890,regulation of lipid biosynthetic process,141,8,3.58,0.02109,1
+GO:0045834,positive regulation of lipid metabolic p...,122,8,3.09,0.02140,1
+GO:1901631,positive regulation of presynaptic membr...,1,1,0.03,0.02155,1
+GO:0030334,regulation of cell migration,861,29,21.84,0.02157,1
+GO:0048599,oocyte development,59,6,1.5,0.02161,1
+GO:0072032,proximal convoluted tubule segment 2 dev...,1,1,0.03,0.02178,1
+GO:0042306,regulation of protein import into nucleu...,51,2,1.29,0.02199,1
+GO:0042180,cellular ketone metabolic process,169,10,4.29,0.02224,1
+GO:0007281,germ cell development,254,11,6.44,0.02225,1
+GO:0072020,proximal straight tubule development,2,1,0.05,0.02247,1
+GO:0072019,proximal convoluted tubule development,2,1,0.05,0.02247,1
+GO:0097193,intrinsic apoptotic signaling pathway,258,10,6.54,0.02262,1
+GO:0030185,nitric oxide transport,1,1,0.03,0.02267,1
+GO:0019725,cellular homeostasis,667,25,16.92,0.02272,1
+GO:0120012,intermembrane sphingolipid transfer,1,1,0.03,0.02283,1
+GO:0090101,negative regulation of transmembrane rec...,108,6,2.74,0.02295,1
+GO:0046041,ITP metabolic process,1,1,0.03,0.02332,1
+GO:0000022,mitotic spindle elongation,12,2,0.3,0.02335,1
+GO:0001667,ameboidal-type cell migration,439,18,11.13,0.02359,1
+GO:0032885,regulation of polysaccharide biosyntheti...,48,4,1.22,0.02361,1
+GO:0042177,negative regulation of protein catabolic...,69,6,1.75,0.02418,1
+GO:1902807,negative regulation of cell cycle G1/S p...,67,4,1.7,0.02424,1
+GO:0043031,negative regulation of macrophage activa...,21,3,0.53,0.02431,1
+GO:0007292,female gamete generation,165,9,4.18,0.02449,1
+GO:0002688,regulation of leukocyte chemotaxis,108,7,2.74,0.02458,1
+GO:0042110,T cell activation,397,10,10.07,0.02461,1
+GO:0009395,phospholipid catabolic process,48,4,1.22,0.02510,1
+GO:0072022,descending thin limb development,1,1,0.03,0.02521,1
+GO:0061054,dermatome development,1,1,0.03,0.02521,1
+GO:0031113,regulation of microtubule polymerization,69,4,1.75,0.02547,1
+GO:1904438,regulation of iron ion import across pla...,1,1,0.03,0.02559,1
+GO:0045598,regulation of fat cell differentiation,110,7,2.79,0.02594,1
+GO:1904098,regulation of protein O-linked glycosyla...,1,1,0.03,0.02597,1
+GO:0044092,negative regulation of molecular functio...,837,28,21.23,0.02644,1
+GO:0097190,apoptotic signaling pathway,496,17,12.58,0.02666,1
+GO:1900055,regulation of leaf senescence,1,1,0.03,0.02685,1
+GO:0002791,regulation of peptide secretion,176,8,4.46,0.02687,1
+GO:1904211,membrane protein proteolysis involved in...,1,1,0.03,0.02695,1
+GO:1904100,positive regulation of protein O-linked ...,1,1,0.03,0.02703,1
+GO:0034144,negative regulation of toll-like recepto...,8,2,0.2,0.02705,1
+GO:0035378,carbon dioxide transmembrane transport,1,1,0.03,0.02716,1
+GO:0051231,spindle elongation,13,2,0.33,0.02732,1
+GO:0031102,neuron projection regeneration,78,5,1.98,0.02766,1
+GO:0007584,response to nutrient,145,9,3.68,0.02783,1
+GO:1903844,regulation of cellular response to trans...,102,6,2.59,0.02797,1
+GO:1901194,negative regulation of formation of tran...,1,1,0.03,0.02817,1
+GO:1901342,regulation of vasculature development,230,11,5.83,0.02828,1
+GO:1901193,regulation of formation of translation p...,1,1,0.03,0.02865,1
+GO:0003097,renal water transport,6,2,0.15,0.02875,1
+GO:0030032,lamellipodium assembly,70,3,1.78,0.02881,1
+GO:1990737,response to manganese-induced endoplasmi...,1,1,0.03,0.02893,1
+GO:0015790,UDP-xylose transmembrane transport,1,1,0.03,0.02908,1
+GO:0110091,negative regulation of hippocampal neuro...,1,1,0.03,0.02920,1
+GO:0031214,biomineral tissue development,142,8,3.6,0.02969,1
+GO:0040017,positive regulation of locomotion,553,21,14.03,0.02969,1
+GO:0060425,lung morphogenesis,44,4,1.12,0.02975,1
+GO:0048894,efferent axon development in a lateral l...,1,1,0.03,0.03030,1

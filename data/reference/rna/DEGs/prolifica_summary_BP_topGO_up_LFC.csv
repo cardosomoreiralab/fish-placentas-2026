@@ -1,0 +1,201 @@
+GO.ID,Term,Annotated,Significant,Expected,weightFisher,p.adj
+GO:0006629,lipid metabolic process,1318,74,45.09,5.3e-06,0.0213391
+GO:0051247,positive regulation of protein metabolic...,1335,72,45.67,1.4e-05,0.0407429
+GO:0051246,regulation of protein metabolic process,2244,101,76.77,0.00013,0.5755125
+GO:0043412,macromolecule modification,3794,152,129.79,0.00015,0.5755125
+GO:0036211,protein modification process,3605,148,123.33,0.00029,0.844085
+GO:0051179,localization,5360,222,183.37,0.00033,0.844085
+GO:1900078,positive regulation of cellular response...,21,5,0.72,0.0007,1
+GO:0044248,cellular catabolic process,2003,93,68.52,0.00085,1
+GO:1901700,response to oxygen-containing compound,1564,81,53.5,0.00102,1
+GO:0046628,positive regulation of insulin receptor ...,20,5,0.68,0.00124,1
+GO:0016053,organic acid biosynthetic process,273,20,9.34,0.00133,1
+GO:0061024,membrane organization,800,44,27.37,0.0014,1
+GO:0031652,positive regulation of heat generation,7,3,0.24,0.00141,1
+GO:0019730,antimicrobial humoral response,48,6,1.64,0.00162,1
+GO:0007031,peroxisome organization,39,6,1.33,0.00181,1
+GO:0051051,negative regulation of transport,402,28,13.75,0.00196,1
+GO:0032754,positive regulation of interleukin-5 pro...,10,3,0.34,0.00206,1
+GO:0030041,actin filament polymerization,207,11,7.08,0.00209,1
+GO:0010817,regulation of hormone levels,467,31,15.98,0.00225,1
+GO:1901565,organonitrogen compound catabolic proces...,1270,62,43.45,0.00226,1
+GO:0051171,regulation of nitrogen compound metaboli...,4977,180,170.26,0.00231,1
+GO:0051172,negative regulation of nitrogen compound...,2025,84,69.28,0.00252,1
+GO:0044255,cellular lipid metabolic process,953,50,32.6,0.0026,1
+GO:1903792,negative regulation of anion transport,19,5,0.65,0.00268,1
+GO:1901575,organic substance catabolic process,1961,87,67.09,0.00277,1
+GO:0032736,positive regulation of interleukin-13 pr...,11,3,0.38,0.0028,1
+GO:1903960,negative regulation of anion transmembra...,11,4,0.38,0.00294,1
+GO:0032070,regulation of deoxyribonuclease activity,9,3,0.31,0.00312,1
+GO:0051173,positive regulation of nitrogen compound...,2814,111,96.27,0.0032,1
+GO:0022603,regulation of anatomical structure morph...,956,49,32.7,0.00329,1
+GO:0038134,ERBB2-EGFR signaling pathway,4,2,0.14,0.00332,1
+GO:0009448,gamma-aminobutyric acid metabolic proces...,8,3,0.27,0.0034,1
+GO:1903036,positive regulation of response to wound...,92,10,3.15,0.00349,1
+GO:0008610,lipid biosynthetic process,644,37,22.03,0.00367,1
+GO:0001779,natural killer cell differentiation,24,4,0.82,0.00369,1
+GO:2000758,positive regulation of peptidyl-lysine a...,39,6,1.33,0.00377,1
+GO:0060313,negative regulation of blood vessel remo...,3,2,0.1,0.0038,1
+GO:0140352,export from cell,836,44,28.6,0.00393,1
+GO:0043353,enucleate erythrocyte differentiation,2,2,0.07,0.00404,1
+GO:1903959,regulation of anion transmembrane transp...,25,5,0.86,0.00412,1
+GO:1903530,regulation of secretion by cell,556,32,19.02,0.00428,1
+GO:0043314,negative regulation of neutrophil degran...,6,2,0.21,0.00441,1
+GO:0042445,hormone metabolic process,187,14,6.4,0.0045,1
+GO:1903034,regulation of response to wounding,184,15,6.29,0.00456,1
+GO:0002793,positive regulation of peptide secretion,82,10,2.81,0.00467,1
+GO:0032501,multicellular organismal process,6960,269,238.1,0.00485,1
+GO:0018352,protein-pyridoxal-5-phosphate linkage,3,2,0.1,0.00489,1
+GO:1903825,organic acid transmembrane transport,145,14,4.96,0.00497,1
+GO:0007088,regulation of mitotic nuclear division,99,7,3.39,0.00508,1
+GO:0031650,regulation of heat generation,10,3,0.34,0.0055,1
+GO:0042118,endothelial cell activation,10,3,0.34,0.00556,1
+GO:0072593,reactive oxygen species metabolic proces...,187,14,6.4,0.0057,1
+GO:0046824,positive regulation of nucleocytoplasmic...,53,5,1.81,0.00583,1
+GO:0009056,catabolic process,2403,101,82.21,0.00605,1
+GO:0055085,transmembrane transport,1523,71,52.1,0.00616,1
+GO:0010762,regulation of fibroblast migration,41,6,1.4,0.00634,1
+GO:1905244,regulation of modification of synaptic s...,12,3,0.41,0.00659,1
+GO:0002887,negative regulation of myeloid leukocyte...,10,2,0.34,0.00699,1
+GO:0046626,regulation of insulin receptor signaling...,74,8,2.53,0.00711,1
+GO:0032616,interleukin-13 production,15,3,0.51,0.00717,1
+GO:2000463,positive regulation of excitatory postsy...,42,6,1.44,0.0074,1
+GO:0071218,cellular response to misfolded protein,15,3,0.51,0.00752,1
+GO:0032656,regulation of interleukin-13 production,15,3,0.51,0.00763,1
+GO:0035773,insulin secretion involved in cellular r...,71,8,2.43,0.0078,1
+GO:2000377,regulation of reactive oxygen species me...,114,10,3.9,0.00781,1
+GO:0010604,positive regulation of macromolecule met...,3163,121,108.21,0.00803,1
+GO:0045887,positive regulation of synaptic assembly...,5,2,0.17,0.00806,1
+GO:0010977,negative regulation of neuron projection...,176,14,6.02,0.00817,1
+GO:1900076,regulation of cellular response to insul...,66,7,2.26,0.00828,1
+GO:0032881,regulation of polysaccharide metabolic p...,51,6,1.74,0.00834,1
+GO:0008286,insulin receptor signaling pathway,125,12,4.28,0.0084,1
+GO:0009743,response to carbohydrate,219,17,7.49,0.00841,1
+GO:0060255,regulation of macromolecule metabolic pr...,5515,194,188.67,0.00842,1
+GO:0009449,gamma-aminobutyric acid biosynthetic pro...,6,3,0.21,0.00844,1
+GO:0046395,carboxylic acid catabolic process,228,17,7.8,0.00849,1
+GO:0016049,cell growth,521,29,17.82,0.00859,1
+GO:0032634,interleukin-5 production,16,3,0.55,0.00867,1
+GO:0032674,regulation of interleukin-5 production,16,3,0.55,0.00922,1
+GO:0008284,positive regulation of cell population p...,809,40,27.68,0.00927,1
+GO:0060749,mammary gland alveolus development,12,3,0.41,0.00928,1
+GO:0061377,mammary gland lobule development,12,3,0.41,0.00928,1
+GO:0071284,cellular response to lead ion,6,2,0.21,0.0093,1
+GO:0031345,negative regulation of cell projection o...,224,16,7.66,0.00943,1
+GO:0048661,positive regulation of smooth muscle cel...,92,10,3.15,0.00952,1
+GO:0046394,carboxylic acid biosynthetic process,271,19,9.27,0.00954,1
+GO:0051603,proteolysis involved in protein cataboli...,768,40,26.27,0.00988,1
+GO:0098656,anion transmembrane transport,288,19,9.85,0.00994,1
+GO:0008202,steroid metabolic process,276,17,9.44,0.01003,1
+GO:1900046,regulation of hemostasis,69,7,2.36,0.01014,1
+GO:0031344,regulation of cell projection organizati...,796,41,27.23,0.01032,1
+GO:0031649,heat generation,12,3,0.41,0.01035,1
+GO:0036230,granulocyte activation,45,5,1.54,0.01074,1
+GO:0045741,positive regulation of epidermal growth ...,17,3,0.58,0.01078,1
+GO:0090087,regulation of peptide transport,190,16,6.5,0.01115,1
+GO:0032956,regulation of actin cytoskeleton organiz...,397,22,13.58,0.01148,1
+GO:0032891,negative regulation of organic acid tran...,15,4,0.51,0.01149,1
+GO:0007267,cell-cell signaling,1677,76,57.37,0.01169,1
+GO:0031401,positive regulation of protein modificat...,924,51,31.61,0.01185,1
+GO:0033002,muscle cell proliferation,196,14,6.71,0.01193,1
+GO:0044283,small molecule biosynthetic process,510,28,17.45,0.01194,1
+GO:0044265,cellular macromolecule catabolic process,962,46,32.91,0.01199,1
+GO:0002791,regulation of peptide secretion,187,16,6.4,0.01212,1
+GO:0007044,cell-substrate junction assembly,108,10,3.69,0.01223,1
+GO:1905953,negative regulation of lipid localizatio...,38,5,1.3,0.01226,1
+GO:0046883,regulation of hormone secretion,236,17,8.07,0.01233,1
+GO:0016054,organic acid catabolic process,232,17,7.94,0.01248,1
+GO:0150115,cell-substrate junction organization,118,10,4.04,0.01257,1
+GO:0034242,negative regulation of syncytium formati...,5,2,0.17,0.01267,1
+GO:0034763,negative regulation of transmembrane tra...,113,10,3.87,0.0127,1
+GO:0043574,peroxisomal transport,25,4,0.86,0.01274,1
+GO:0040007,growth,983,47,33.63,0.01277,1
+GO:0042760,very long-chain fatty acid catabolic pro...,8,3,0.27,0.01282,1
+GO:0032924,activin receptor signaling pathway,47,4,1.61,0.01285,1
+GO:0006041,glucosamine metabolic process,4,2,0.14,0.0129,1
+GO:0032890,regulation of organic acid transport,54,7,1.85,0.01297,1
+GO:0016050,vesicle organization,325,19,11.12,0.013,1
+GO:0051541,elastin metabolic process,5,2,0.17,0.01323,1
+GO:0051409,response to nitrosative stress,5,2,0.17,0.01325,1
+GO:2000251,positive regulation of actin cytoskeleto...,16,3,0.55,0.01349,1
+GO:0045951,positive regulation of mitotic recombina...,1,1,0.03,0.0137,1
+GO:0010810,regulation of cell-substrate adhesion,224,15,7.66,0.01378,1
+GO:0032879,regulation of localization,1971,89,67.43,0.01401,1
+GO:1900127,positive regulation of hyaluronan biosyn...,5,2,0.17,0.01465,1
+GO:0090218,positive regulation of lipid kinase acti...,30,5,1.03,0.01483,1
+GO:0070813,hydrogen sulfide metabolic process,7,2,0.24,0.01499,1
+GO:0061041,regulation of wound healing,141,14,4.82,0.01507,1
+GO:0005976,polysaccharide metabolic process,120,9,4.11,0.01511,1
+GO:0061091,regulation of phospholipid translocation,5,2,0.17,0.01513,1
+GO:0045740,positive regulation of DNA replication,36,4,1.23,0.01516,1
+GO:1901890,positive regulation of cell junction ass...,116,9,3.97,0.01519,1
+GO:0010256,endomembrane system organization,546,29,18.68,0.01532,1
+GO:0090276,regulation of peptide hormone secretion,184,16,6.29,0.01544,1
+GO:1905952,regulation of lipid localization,137,12,4.69,0.01545,1
+GO:1902766,skeletal muscle satellite cell migration,5,2,0.17,0.01566,1
+GO:0051248,negative regulation of protein metabolic...,879,42,30.07,0.01579,1
+GO:2000725,regulation of cardiac muscle cell differ...,17,3,0.58,0.01593,1
+GO:0007447,imaginal disc pattern formation,5,2,0.17,0.01595,1
+GO:0039694,viral RNA genome replication,26,3,0.89,0.01608,1
+GO:0046887,positive regulation of hormone secretion,123,11,4.21,0.01614,1
+GO:0016338,calcium-independent cell-cell adhesion v...,21,3,0.72,0.01619,1
+GO:0030163,protein catabolic process,934,45,31.95,0.01648,1
+GO:0035556,intracellular signal transduction,2505,106,85.7,0.0167,1
+GO:0060216,definitive hemopoiesis,40,5,1.37,0.01675,1
+GO:0010562,positive regulation of phosphorus metabo...,826,43,28.26,0.01732,1
+GO:0010360,negative regulation of anion channel act...,3,2,0.1,0.01734,1
+GO:0010544,negative regulation of platelet activati...,13,3,0.44,0.01749,1
+GO:0008652,cellular amino acid biosynthetic process,76,7,2.6,0.01753,1
+GO:0007169,transmembrane receptor protein tyrosine ...,654,33,22.37,0.01755,1
+GO:0030101,natural killer cell activation,55,5,1.88,0.01763,1
+GO:0051098,regulation of binding,308,20,10.54,0.01764,1
+GO:2000112,regulation of cellular macromolecule bio...,448,23,15.33,0.01774,1
+GO:1905038,regulation of membrane lipid metabolic p...,16,3,0.55,0.01781,1
+GO:0006534,cysteine metabolic process,16,3,0.55,0.01815,1
+GO:0090153,regulation of sphingolipid biosynthetic ...,16,3,0.55,0.01828,1
+GO:0010815,bradykinin catabolic process,4,2,0.14,0.01846,1
+GO:0038001,paracrine signaling,5,2,0.17,0.01855,1
+GO:0090277,positive regulation of peptide hormone s...,82,10,2.81,0.01863,1
+GO:0009611,response to wounding,522,29,17.86,0.01865,1
+GO:0032368,regulation of lipid transport,118,11,4.04,0.01865,1
+GO:0070814,hydrogen sulfide biosynthetic process,6,2,0.21,0.01869,1
+GO:0007409,axonogenesis,563,29,19.26,0.01884,1
+GO:0030218,erythrocyte differentiation,134,9,4.58,0.01887,1
+GO:0051489,regulation of filopodium assembly,69,8,2.36,0.01893,1
+GO:0032885,regulation of polysaccharide biosyntheti...,46,5,1.57,0.01912,1
+GO:0051924,regulation of calcium ion transport,230,16,7.87,0.01964,1
+GO:0015850,organic hydroxy compound transport,235,18,8.04,0.01965,1
+GO:0048660,regulation of smooth muscle cell prolife...,146,11,4.99,0.01969,1
+GO:0098815,modulation of excitatory postsynaptic po...,58,6,1.98,0.0198,1
+GO:0038128,ERBB2 signaling pathway,10,2,0.34,0.02031,1
+GO:0032970,regulation of actin filament-based proce...,438,24,14.98,0.02033,1
+GO:0090303,positive regulation of wound healing,71,9,2.43,0.02046,1
+GO:2000174,regulation of pro-T cell differentiation,1,1,0.03,0.02055,1
+GO:0099159,regulation of modification of postsynapt...,9,3,0.31,0.02069,1
+GO:0051788,response to misfolded protein,17,3,0.58,0.02089,1
+GO:0106300,protein-DNA covalent cross-linking repai...,9,2,0.31,0.02101,1
+GO:0003013,circulatory system process,455,25,15.57,0.02103,1
+GO:0098787,mRNA cleavage involved in mRNA processin...,12,2,0.41,0.02106,1
+GO:0034067,protein localization to Golgi apparatus,35,4,1.2,0.02111,1
+GO:0015910,long-chain fatty acid import into peroxi...,4,2,0.14,0.02121,1
+GO:0044070,regulation of anion transport,74,8,2.53,0.02127,1
+GO:1901985,positive regulation of protein acetylati...,45,6,1.54,0.02136,1
+GO:0030213,hyaluronan biosynthetic process,12,2,0.41,0.02142,1
+GO:0009306,protein secretion,343,21,11.73,0.02163,1
+GO:0072111,cell proliferation involved in kidney de...,16,3,0.55,0.02168,1
+GO:0032147,activation of protein kinase activity,124,12,4.24,0.02188,1
+GO:0090398,cellular senescence,80,7,2.74,0.02198,1
+GO:0048883,neuromast primordium migration,6,2,0.21,0.0224,1
+GO:1903789,regulation of amino acid transmembrane t...,13,3,0.44,0.02253,1
+GO:0033197,response to vitamin E,5,2,0.17,0.02262,1
+GO:0006556,S-adenosylmethionine biosynthetic proces...,7,2,0.24,0.02266,1
+GO:0035592,establishment of protein localization to...,343,21,11.73,0.02274,1
+GO:0032069,regulation of nuclease activity,18,3,0.62,0.02322,1
+GO:0060263,regulation of respiratory burst,18,3,0.62,0.02325,1
+GO:0120035,regulation of plasma membrane bounded ce...,779,40,26.65,0.02326,1
+GO:0006893,Golgi to plasma membrane transport,56,6,1.92,0.02344,1
+GO:0050818,regulation of coagulation,75,7,2.57,0.02346,1
+GO:0051574,positive regulation of histone H3-K9 met...,8,2,0.27,0.02347,1
+GO:2000378,negative regulation of reactive oxygen s...,39,5,1.33,0.02353,1
+GO:0009057,macromolecule catabolic process,1260,54,43.1,0.02354,1
+GO:0006793,phosphorus metabolic process,2739,112,93.7,0.02401,1

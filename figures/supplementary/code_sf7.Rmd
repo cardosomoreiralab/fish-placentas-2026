@@ -1,33 +1,113 @@
 ---
-title: "Supplementary Figure 7 - TF activity similarity and shared TF patterns"
+title: "Supplementary Figure 7"
 output:
   html_document:
     toc: true
-    toc_float: true
-    fig_width: 11
-    fig_height: 9
+    toc_depth: 2
+editor_options:
+  chunk_output_type: console
 ---
+
+# Supplementary Figure 7
+
+## Getting the data
+
+Processed data are deposited at ArrayExpress, genome assemblies at ENA:
+
+| Data | Accession |
+|---|---|
+| Single-nucleus RNA-seq | `E-MTAB-17757` |
+| Single-nucleus ATAC-seq | `E-MTAB-17776` |
+| Genome assemblies | `PRJEB115767` |
+
+Small reference tables are committed in this repository under `data/reference/`
+and need no download: orthology maps, TF lists, SAMap scores, gene-to-GO maps,
+TF activity, and the differential expression tables.
+
+Download the processed objects from the two ArrayExpress accessions into one
+master folder. Every script reads from exactly two places: `DATA_DIR` (what you
+downloaded) and `REF_DIR` (this repository).
+
+```
+<DATA_DIR>/
+|-- snRNA/                                   E-MTAB-17757
+|   `-- seurat/
+|       |-- bifurca_atlas.rds
+|       |-- brachi_atlas.rds
+|       |-- formosa_atlas.rds
+|       |-- gracilis_atlas.rds
+|       |-- gracilis_atlas_pregnant.rds    pregnant samples only
+|       |-- infans_atlas.rds
+|       |-- phallo_atlas.rds
+|       |-- picta_atlas.rds
+|       |-- prolifica_atlas.rds
+|       |-- turneri_atlas.rds
+|       `-- turneri_atlas_pregnant.rds     pregnant samples only
+`-- snATAC/                                  E-MTAB-17776
+    |-- archr/
+    |   `-- <species>/
+    |       |-- ArrowFiles/<Species>_ovary_<library>.arrow
+    |       `-- Save-ArchR-Project.rds
+    `-- scenicplus/
+        `-- <species>/
+            |-- eRegulon_<cell type>.csv
+            `-- raw_TF_gene_pairs.tsv
+```
+
+**Naming conventions.** `<species>` is always the lower-case short name:
+`bifurca`, `brachi`, `formosa`, `gracilis`, `infans`, `phallo`, `picta`,
+`prolifica`, `turneri`. Two renames are needed after download, because the
+deposited archives are flat:
+
+- Seurat objects are deposited under their analysis names
+  (`bifurca_harmony_annotated.rds`, `TurneriAtlas_pregnant_non_pregnant_juvenile.rds`,
+  and so on). Rename each to `<species>_atlas.rds`. *P. gracilis* and
+  *P. turneri* also have a pregnant-only atlas; name those
+  `<species>_atlas_pregnant.rds`. Panels use the combined atlas unless
+  stated otherwise - Figure 1B uses the pregnant-only *P. turneri* atlas.
+- ArchR project objects are deposited as `<species>_Save-ArchR-Project.rds`.
+  Drop the prefix so each becomes `Save-ArchR-Project.rds` inside its own
+  `<species>/` folder, with that species' arrow files in `ArrowFiles/` beside it.
+  `loadArchRProject()` re-points the arrow paths itself on first load. On a
+  network filesystem set `Sys.setenv(HDF5_USE_FILE_LOCKING = "FALSE")` first.
+
+Every atlas carries a `cell_type` column in `meta.data` using one vocabulary
+across all nine species. The scripts below use that column rather than the
+per-species cluster numbers, so the same code runs for every species.
+
+## Panels in this file
+
+| Panel | Chunk | Status |
+|---|---|---|
+| S7A | see below | global TF activity heatmap |
+| S7B | see below | granulosa/theca and late follicle/germinal epithelium TF patterns |
 
 ```{r knitr-setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = TRUE, warning = FALSE,
-                      fig.align = "center", dev = "png", dpi = 150)
+                      fig.align = "center", dev = "png", dpi = 300)
 ```
 
-# Paths - edit these for your environment
-
 ```{r paths}
-# Edit the path below to the directory containing the downloaded data
+## PURPOSE : Set the two paths every chunk below reads from.
+## PRODUCES: DATA_DIR, REF_DIR, SPECIES, activity_f()
+## QUESTION: none - configuration only.
 
-DATA_DIR <- "XXXXXXXXXXXXXXXXXXXX"
+DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"   # master folder described above
+REF_DIR  <- "../../data/reference"            # reference tables, committed in this repo
 
-REF_DIR <- file.path(dirname(DATA_DIR), "reference_files", "atac")
-stopifnot(dir.exists(DATA_DIR))
+stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
 
 SPECIES <- c("gracilis", "turneri", "bifurca", "picta")
 
+activity_f <- function(sp) file.path(REF_DIR, "atac", "TF_activity",
+                                     paste0(sp, "_activity_df.rds"))
 ```
 
 ```{r libraries}
+## PURPOSE : Load the packages the rest of the file needs.
+## PRODUCES: attached packages
+## QUESTION: none - configuration only.
+
 suppressPackageStartupMessages({
   library(tidyverse)
   library(pheatmap)
@@ -36,16 +116,24 @@ suppressPackageStartupMessages({
 ```
 
 ```{r vocabulary}
+## PURPOSE : Name the cell types the figure focuses on.
+## PRODUCES: FOCAL_CELL_TYPES
+## QUESTION: none - these are the follicle-lineage types the panels compare.
+
 # Every input uses the display vocabulary; nothing is translated here.
 ```
 
 ```{r activity-matrices}
+## PURPOSE : Read per-species TF motif activity: motif enrichment in each cell type's marker peaks.
+## PRODUCES: activity_dfs - one motif x cell type matrix per species
+## QUESTION: which transcription factor motifs are enriched in the peaks of each cell type?
+
 # TF activity: motif enrichment in each cell type's marker peaks, as -log10
 # adjusted p-values. Read, not recomputed: the deposited ArchR projects keep
 # the motif match files but their peakAnnotation slot is empty, so
 # peakAnnoEnrichment() cannot be run against them.
 activity_dfs <- lapply(SPECIES, function(sp) {
-  f <- file.path(DATA_DIR, "activity_tables", paste0(sp, "_activity_df.rds"))
+  f <- activity_f(sp)
   if (!file.exists(f)) stop("missing activity table: ", f, call. = FALSE)
   as.data.frame(readRDS(f))
 })
@@ -57,6 +145,10 @@ lapply(activity_dfs, colnames)
 # A. Cross-species TF-activity similarity
 
 ```{r merge}
+## PURPOSE : Reduce the four species to the motifs scored in all of them, dropping embryonic cell types and invariant motifs.
+## PRODUCES: merged_df_filtered
+## QUESTION: none - puts the four species on a common set of motifs.
+
 # One matrix of species_cellType columns, over the motifs scored in all four,
 # without the embryonic cell types or invariant motifs.
 common_tfs <- Reduce(intersect, lapply(activity_dfs, rownames))
@@ -79,6 +171,10 @@ dim(merged_df_filtered)
 ```
 
 ```{r similarity-helpers}
+## PURPOSE : Define Pearson similarity within and between activity matrices.
+## PRODUCES: simMat() and the between-matrix helper
+## QUESTION: none - analysis helper.
+
 # Pearson similarity, within one matrix and between two.
 METHOD <- "pearson"
 
@@ -106,6 +202,10 @@ species_colors <- c(turneri = "#377EB8", gracilis = "#E41A1C",
 ## A1. Global similarity, every cell type in every species
 
 ```{r sf7a-global, fig.width = 13, fig.height = 12}
+## PURPOSE : Supplementary 7A - cluster every species-by-cell-type column on TF activity.
+## PRODUCES: the heatmap, printed in the document
+## QUESTION: do the same cell types group across species, or does each species group with itself?
+
 # Supplementary 7A: do the same cell types group across species, or does each
 # species group with itself?
 s  <- simMat(merged_df_filtered)
@@ -144,6 +244,10 @@ if (requireNamespace("ComplexHeatmap", quietly = TRUE)) {
 # B. Transcription factors with shared patterns across species
 
 ```{r sf7b-pipelines}
+## PURPOSE : Rank TFs by the two activity patterns of interest.
+## PRODUCES: the per-pattern TF rankings
+## QUESTION: which TFs peak in granulosa and theca, and which in the late follicle cell?
+
 # TFs whose activity ranks follow one of two patterns: top in granulosa and
 # theca, or focused on the late follicle cell. Ranks are taken over these cell
 # types only, and are natural ranks - no per-species activity floor.
@@ -220,6 +324,10 @@ find_dual_pattern_tfs_2 <- function(activity_df, species_name, min_gap = 3) {
 ```
 
 ```{r sf7b-plots, fig.width = 18, fig.height = 9}
+## PURPOSE : Supplementary 7B - mean activity rank per cell type across supporting species.
+## PRODUCES: the two rank plots, printed in the document
+## QUESTION: do the follicle lineages use distinguishable sets of regulators?
+
 # Supplementary 7B: mean rank per cell type across the species that support a
 # TF. A TF whose MEAN activity in a cell type is below act_floor is pushed to
 # the bottom rank, so a low-activity cell type cannot look informative just
@@ -307,5 +415,9 @@ invisible(make_plot(find_dual_pattern_tfs_2,
 ```
 
 ```{r session}
+## PURPOSE : Record package versions for reproducibility.
+## PRODUCES: sessionInfo()
+## QUESTION: none - provenance.
+
 sessionInfo()
 ```
