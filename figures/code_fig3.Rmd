@@ -20,60 +20,36 @@ Processed data are deposited at ArrayExpress, genome assemblies at ENA:
 | Single-nucleus ATAC-seq | `E-MTAB-17776` |
 | Genome assemblies | `PRJEB115767` |
 
-Small reference tables are committed in this repository under `data/reference/`
-and need no download: orthology maps, TF lists, SAMap scores, gene-to-GO maps,
-TF activity, and the differential expression tables.
+Everything except the single-nucleus atlases is committed in this repository
+under `data/reference/`: orthology maps, TF lists, SAMap scores, gene-to-GO
+maps, TF activity, the differential expression tables and the SCENIC+ output.
 
-Download the processed objects from the two ArrayExpress accessions into one
-master folder. Every script reads from exactly two places: `DATA_DIR` (what you
-downloaded) and `REF_DIR` (this repository).
+Only the atlases need downloading. Put them in one folder and point
+`DATA_DIR` at it; the files are used exactly as ArrayExpress delivers them, so
+nothing needs renaming.
 
 ```
 <DATA_DIR>/
-|-- snRNA/                                   E-MTAB-17757
-|   `-- seurat/
-|       |-- bifurca_atlas.rds
-|       |-- brachi_atlas.rds
-|       |-- formosa_atlas.rds
-|       |-- gracilis_atlas.rds
-|       |-- gracilis_atlas_pregnant.rds    pregnant samples only
-|       |-- infans_atlas.rds
-|       |-- phallo_atlas.rds
-|       |-- picta_atlas.rds
-|       |-- prolifica_atlas.rds
-|       |-- turneri_atlas.rds
-|       `-- turneri_atlas_pregnant.rds     pregnant samples only
-`-- snATAC/                                  E-MTAB-17776
-    |-- archr/
-    |   `-- <species>/
-    |       |-- ArrowFiles/<Species>_ovary_<library>.arrow
-    |       `-- Save-ArchR-Project.rds
-    `-- scenicplus/
-        `-- <species>/
-            |-- eRegulon_<cell type>.csv
-            `-- raw_TF_gene_pairs.tsv
+`-- snRNA/
+    `-- seurat/                                  E-MTAB-17757
+        |-- BifurcaAtlas.rds
+        |-- BrachiAtlas.rds
+        |-- FormosaAtlas.rds
+        |-- GracilisAtlas_pregnant_non_pregnant.rds
+        |-- GracilisAtlas_pregnant.rds
+        |-- InfansAtlas.rds
+        |-- PhallocerusAtlas.rds
+        |-- PictaAtlas.rds
+        |-- ProlificaAtlas.rds
+        |-- TurneriAtlas_pregnant_non_pregnant_juvenile.rds
+        `-- TurneriAtlas_pregnant.rds
 ```
 
-**Naming conventions.** `<species>` is always the lower-case short name:
-`bifurca`, `brachi`, `formosa`, `gracilis`, `infans`, `phallo`, `picta`,
-`prolifica`, `turneri`. Two renames are needed after download, because the
-deposited archives are flat:
+Panels use the combined atlas for *P. gracilis* and *P. turneri* unless stated
+otherwise; Figure 1B uses the pregnant-only *P. turneri* atlas.
 
-- Seurat objects are deposited under their analysis names
-  (`bifurca_harmony_annotated.rds`, `TurneriAtlas_pregnant_non_pregnant_juvenile.rds`,
-  and so on). Rename each to `<species>_atlas.rds`. *P. gracilis* and
-  *P. turneri* also have a pregnant-only atlas; name those
-  `<species>_atlas_pregnant.rds`. Panels use the combined atlas unless
-  stated otherwise - Figure 1B uses the pregnant-only *P. turneri* atlas.
-- ArchR project objects are deposited as `<species>_Save-ArchR-Project.rds`.
-  Drop the prefix so each becomes `Save-ArchR-Project.rds` inside its own
-  `<species>/` folder, with that species' arrow files in `ArrowFiles/` beside it.
-  `loadArchRProject()` re-points the arrow paths itself on first load. On a
-  network filesystem set `Sys.setenv(HDF5_USE_FILE_LOCKING = "FALSE")` first.
-
-Every atlas carries a `cell_type` column in `meta.data` using one vocabulary
-across all nine species. The scripts below use that column rather than the
-per-species cluster numbers, so the same code runs for every species.
+Every atlas carries a `cell_type` column, which the scripts use rather than
+per-species cluster numbers.
 
 ## Panels in this file
 
@@ -99,6 +75,26 @@ DATA_DIR <- "XXXXXXXXXXXXXXXXXXXXXXXXXX"   # master folder described above
 REF_DIR  <- "../data/reference"             # reference tables, committed in this repo
 
 stopifnot(dir.exists(DATA_DIR), dir.exists(REF_DIR))
+
+## The atlases are read under the names ArrayExpress delivers, so nothing needs
+## renaming after download.
+ATLAS <- c(bifurca   = "BifurcaAtlas.rds",
+           brachi    = "BrachiAtlas.rds",
+           formosa   = "FormosaAtlas.rds",
+           gracilis  = "GracilisAtlas_pregnant_non_pregnant.rds",
+           infans    = "InfansAtlas.rds",
+           phallo    = "PhallocerusAtlas.rds",
+           picta     = "PictaAtlas.rds",
+           prolifica = "ProlificaAtlas.rds",
+           turneri   = "TurneriAtlas_pregnant_non_pregnant_juvenile.rds")
+
+ATLAS_PREGNANT <- c(gracilis = "GracilisAtlas_pregnant.rds",
+                    turneri  = "TurneriAtlas_pregnant.rds")
+
+atlas_path <- function(sp, pregnant = FALSE)
+  file.path(DATA_DIR, "snRNA", "seurat",
+            if (pregnant) ATLAS_PREGNANT[[sp]] else ATLAS[[sp]])
+
 
 suppressPackageStartupMessages({
   library(dplyr); library(tidyr); library(readr); library(tibble)
@@ -135,7 +131,7 @@ OVULATION      <- c("pgr","inhbb","inha","inhba","fshr","lhcgr","ptgs2","adamts1
                     "cyp17a2","duox","foxp3a","lepr","lhb","mettl3","nedd8","pgrmc1")
 
 score_species <- function(sp) {
-  obj  <- readRDS(file.path(DATA_DIR, "snRNA", "seurat", paste0(sp, "_atlas.rds")))
+  obj  <- readRDS(atlas_path(sp))
   cnts <- obj[["RNA"]]$counts
   syms <- tolower(gene_symbol(rownames(cnts)))
 

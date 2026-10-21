@@ -42,8 +42,11 @@ data/reference/
 |   |-- Orthology/     one-to-one orthologue maps against turneri
 |   |-- TF_lists/      the transcription factors scored per species
 |   |-- TF_activity/   per-species TF motif activity by cell type
-|   `-- cell_type_specific_eRegulons/
-|                      SCENIC+ eRegulons for the late follicle cell, gzipped
+|   |-- cell_type_specific_eRegulons/
+|   |                  SCENIC+ eRegulons for the late follicle cell, gzipped
+|   |-- SCENICplus_eRegulons/   the full SCENIC+ eRegulon tables, gzipped
+|   |-- SCENICplus_AUC/         binarised eRegulon activity per cell type
+|   `-- SCENICplus_raw_pairs/   candidate TF-gene pairs, gzipped
 |-- rna/
 |   |-- Orthology/     the OrthoFinder/POSSVM orthology table
 |   |-- SAMap/         pairwise SAMap mapping scores
@@ -54,9 +57,9 @@ data/reference/
 `-- supplementary_tables/   orthology, positively selected genes, parallel substitutions
 ```
 
-Everything large is deposited at ArrayExpress. Each script opens with the
-accessions, the folder layout it expects and the two renames the deposited
-archives require.
+Only the single-nucleus atlases need downloading, from ArrayExpress. They are
+read under the names ArrayExpress delivers, so nothing needs renaming; each
+script opens with the accessions and the folder layout it expects.
 
 ## Running the figures
 
